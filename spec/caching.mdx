@@ -1,0 +1,81 @@
+---
+title: "Offline Caching of tldr Pages in Clients"
+sidebarTitle: "Caching"
+description: "How tldr clients implement offline caching by downloading ZIP archives from GitHub releases. Covers archive URLs, language-specific archives, and update behavior."
+---
+
+Caching allows tldr clients to work offline by storing a local copy of pages. Clients that implement caching must download official archives from GitHub releases — they MUST NOT use unofficial mirrors or construct their own archive URLs.
+
+## Archive URLs
+
+The following official archive URLs are available from the tldr-pages GitHub releases:
+
+| Archive | URL | Description |
+|---------|-----|-------------|
+| Full (all languages) | `https://github.com/tldr-pages/tldr/releases/latest/download/tldr.zip` | All pages in every available language — the largest download |
+| English only | `https://github.com/tldr-pages/tldr/releases/latest/download/tldr-pages.zip` | English pages only |
+| Language-specific | `https://github.com/tldr-pages/tldr/releases/latest/download/tldr-pages.{{language-code}}.zip` | Pages for a single language |
+
+Language-specific archive examples:
+
+```text
+tldr-pages.fr.zip   — French
+tldr-pages.zh.zip   — Chinese
+tldr-pages.pt_BR.zip — Portuguese (Brazil)
+tldr-pages.it.zip   — Italian
+```
+
+<Warning>
+  The old asset URL at `https://tldr.sh/assets` was deprecated and has been **permanently removed on January 20, 2026**. Clients that still use the old URL can no longer download pages. All clients must be updated to use the GitHub releases URLs listed above.
+</Warning>
+
+## Implementation requirements
+
+The specification distinguishes between what is strictly required and what is recommended when implementing caching:
+
+<CardGroup cols={2}>
+  <Card title="REQUIRED" icon="circle-check">
+    - If caching is implemented, clients **MUST** download archives from the official GitHub releases URLs above — no other source is permitted.
+    - Clients that support caching **MUST** implement the `-u` / `--update` flag to allow users to manually refresh the local cache.
+  </Card>
+  <Card title="RECOMMENDED" icon="circle-info">
+    - Cache only the languages the user needs, rather than downloading all 40+ language archives unnecessarily.
+    - Automatically update the cache on a regular schedule so pages stay current without requiring manual intervention.
+  </Card>
+</CardGroup>
+
+## Selecting language-specific archives
+
+Clients face a tradeoff when choosing which archive(s) to download:
+
+- **`tldr.zip`** — the full archive includes every page in every available language. It is the simplest option (one download) but is the largest in size.
+- **Language-specific archives** (e.g., `tldr-pages.fr.zip`) — much smaller downloads, containing only pages for a single language. Ideal when the client knows the user's preferred language(s).
+
+It is RECOMMENDED that clients cache only the languages the user actually needs, both to conserve disk space and to reduce download time.
+
+## Updating the cache
+
+Clients that implement caching MUST support the `-u` / `--update` flag:
+
+```bash
+# Update cached pages
+tldr --update
+# or
+tldr -u
+```
+
+Clients MAY also automatically update the cache on a regular schedule so that pages remain up to date without requiring the user to run `--update` manually.
+
+## PDF version
+
+A PDF of all tldr pages is available for offline reading:
+
+```text
+https://github.com/tldr-pages/tldr/releases/latest/download/tldr-book.pdf
+```
+
+This is a static document intended for human reading, not for use as a cache source by clients.
+
+<Note>
+  Caching is RECOMMENDED but not strictly required by the specification. Clients that always fetch pages live from the network (rather than from a local cache) do not need to implement caching at all.
+</Note>

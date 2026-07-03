@@ -1,0 +1,129 @@
+---
+title: "Anatomy of a tldr Page: Structure and Sections"
+sidebarTitle: "Anatomy"
+description: "Understand every section of a tldr page: the title, description block, example descriptions, and command blocks. Includes a fully annotated real example."
+---
+
+Every tldr page follows a strict Markdown structure that clients parse and render consistently. Regardless of the platform or language, all pages share the same four building blocks: a title, a description block, a series of example descriptions, and their matching command blocks. Understanding each part makes it straightforward to read existing pages and contribute new ones.
+
+## Full page template
+
+Every page must conform to the following template:
+
+```markdown
+# command-name
+
+> Short, snappy description.
+> Preferably one line; two are acceptable if necessary.
+> More information: <https://url-to-upstream.tld>.
+
+- Example description:
+
+`command --option`
+
+- Example description:
+
+`command --option1 --option2 {{arg_value}}`
+```
+
+This structure is enforced by [`tldr-lint`](https://github.com/tldr-pages/tldr-lint), which runs automatically on every pull request. See [Submitting a PR](/contributing/submitting-a-pr) for details on running the linter locally.
+
+## Annotated real example
+
+Below is the full content of `pages/common/tar.md`, one of the canonical reference pages in the tldr-pages repository:
+
+```markdown
+# tar
+
+> Archiving utility.
+> Often combined with a compression method, such as `gzip` or `bzip2`.
+> More information: <https://www.gnu.org/software/tar/manual/tar.html>.
+
+- [c]reate an archive and write it to a [f]ile:
+
+`tar cf {{path/to/target.tar}} {{path/to/file1 path/to/file2 ...}}`
+
+- [c]reate a g[z]ipped archive and write it to a [f]ile:
+
+`tar czf {{path/to/target.tar.gz}} {{path/to/file1 path/to/file2 ...}}`
+
+- [c]reate a g[z]ipped (compressed) archive from a directory using relative paths:
+
+`tar czf {{path/to/target.tar.gz}} {{[-C|--directory]}} {{path/to/directory}} .`
+
+- E[x]tract a (compressed) archive [f]ile into the current directory [v]erbosely:
+
+`tar xvf {{path/to/source.tar[.gz|.bz2|.xz]}}`
+
+- E[x]tract a (compressed) archive [f]ile into the target directory:
+
+`tar xf {{path/to/source.tar[.gz|.bz2|.xz]}} {{[-C|--directory]}} {{path/to/directory}}`
+
+- [c]reate a compressed archive and write it to a [f]ile, using the file extension to [a]utomatically determine the compression program:
+
+`tar caf {{path/to/target.tar.xz}} {{path/to/file1 path/to/file2 ...}}`
+
+- Lis[t] the contents of a tar [f]ile [v]erbosely:
+
+`tar tvf {{path/to/source.tar}}`
+
+- E[x]tract files matching a pattern from an archive [f]ile:
+
+`tar xf {{path/to/source.tar}} --wildcards "{{*.html}}"`
+```
+
+Let's walk through each part:
+
+<Accordion title="1. Title — `# tar`">
+The H1 heading is **always** the command name, written exactly as the user would type it. It must match the filename of the page (minus the `.md` extension), and the filename must be lowercase. So `tar.md` has the title `# tar`, and a file named `git-commit.md` has the title `# git-commit`.
+
+The page title can appear in any case (e.g. `# Git` or `# GNU Tar` for branding), but the **Markdown filename itself must always be lowercase**.
+</Accordion>
+
+<Accordion title="2. Description block — the `>` blockquote lines">
+Immediately after the title, one or more `>` blockquote lines form the description block. The ordering within the block follows a set convention:
+
+1. **Short description** — one or two lines summarising what the command does. Do not begin with the command name (e.g. write `Archiving utility.` not `tar is an archiving utility.`).
+2. **Additional notes** (optional) — further clarification, notes, or a `See also:` reference.
+3. **Subcommand notice** (optional) — `Some subcommands such as … have their own usage documentation.`
+4. **More information link** (optional but strongly encouraged) — `More information: <https://…>.` enclosed in angle brackets.
+
+In `tar.md`, the two-line description (`Archiving utility.` followed by `Often combined with a compression method…`) is acceptable because it conveys genuinely useful context. Most pages have a single-line description.
+</Accordion>
+
+<Accordion title="3. Example descriptions — the `- ` bullet lines">
+Each example starts with a Markdown unordered list item (`- `). These lines:
+
+- Are written in the **imperative mood** — `[c]reate an archive`, `E[x]tract a file`, not `Creating an archive` or `This creates an archive`.
+- Describe **what** the command achieves, not **how** (the how is the command block itself).
+- May include **short-option mnemonics** enclosed in square brackets — `[c]reate`, `[z]ipped`, `[f]ile` — to help users map single-letter flags to their meaning. These must match the command's official documentation.
+- End with a colon (`:`).
+- Use backticks for inline technical terms such as command names, paths, and flag names.
+</Accordion>
+
+<Accordion title="4. Command blocks — the backtick-wrapped lines">
+The command block immediately follows its description, separated by a blank line. It is a single line wrapped in backticks. Key rules:
+
+- Only one command per block.
+- User-editable values use `{{placeholder}}` syntax (see [Placeholders](/pages/placeholders)).
+- Option variants use `{{[-s|--long]}}` syntax — e.g. `{{[-C|--directory]}}` in the `tar` example.
+- Multiple arguments of the same kind use an ellipsis — e.g. `{{path/to/file1 path/to/file2 ...}}`.
+- Prefer GNU-style long options (`--verbose`) over short options (`-v`) where both exist and the page is in `common/`.
+</Accordion>
+
+## Rules at a glance
+
+| Rule | Detail |
+|------|--------|
+| **Filename matches command** | `tar.md` → `# tar`; always lowercase filename |
+| **Page title matches filename** | Title can be any case; filename must be lowercase |
+| **Maximum examples** | 8 examples per page |
+| **Preferred number of examples** | ~5 examples |
+| **Description length** | 1 line preferred; 2 acceptable; more only when genuinely necessary |
+| **Imperative mood** | All example descriptions must use imperative mood (`List…`, `Create…`, `Extract…`) |
+| **More information link** | Enclosed in `<angle brackets>`; links to official upstream docs when available |
+| **No text styling** | No italics or bold in page content; reserved for client placeholder highlighting |
+
+<Note>
+The `tldr-lint` linter enforces these structural rules automatically. Before submitting, run it locally with `npm install --global tldr-lint` then `tldr-lint path/to/page.md`. See [Submitting a PR](/contributing/submitting-a-pr) for the full testing workflow.
+</Note>

@@ -1,0 +1,136 @@
+---
+title: "tldr-pages: Simplified Help Pages for CLI Tools"
+sidebarTitle: "Introduction"
+description: "tldr-pages provides concise, example-focused cheatsheet pages for command-line tools. Learn what it is, how it's organized, and why it's used by millions."
+---
+
+tldr-pages is a community-maintained collection of help pages for command-line tools, designed to be a simpler and more approachable complement to traditional `man` pages. Rather than burying you in flags, history, and edge-case descriptions, every tldr page cuts straight to the most practical, real-world examples — so you can get the answer you need and get back to work.
+
+<Note>
+  All tldr pages are community-maintained and freely available under the [Creative Commons Attribution 4.0 (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) license. Contributions from anyone are welcome — adding a new page, improving examples, or translating into another language.
+</Note>
+
+## What is tldr-pages?
+
+Traditional `man` pages are comprehensive references — but their depth can make them hard to use when you just need a quick reminder. Consider the very first option described by `man tar`:
+
+```console
+$ man tar
+...
+-b blocksize
+   Specify the block size, in 512-byte records, for tape drive I/O.
+   As a rule, this argument is only needed when reading from or writing to tape drives,
+   and usually not even then as the default block size of 20 records (10240 bytes) is very common.
+...
+```
+
+That's rarely what you're looking for. In contrast, `tldr tar` shows you the commands you actually use:
+
+```text
+tar
+
+  Archiving utility.
+  Often combined with a compression method, such as gzip or bzip2.
+  More information: https://www.gnu.org/software/tar/manual/tar.html.
+
+  - Create an archive and write it to a file:
+    tar cf path/to/target.tar path/to/file1 path/to/file2 ...
+
+  - Create a gzipped archive and write it to a file:
+    tar czf path/to/target.tar.gz path/to/file1 path/to/file2 ...
+
+  - Extract a (compressed) archive file into the current directory verbosely:
+    tar xvf path/to/source.tar[.gz|.bz2|.xz]
+
+  - List the contents of a tar file verbosely:
+    tar tvf path/to/source.tar
+```
+
+The philosophy is simple: show the most common patterns first, with practical placeholders that make it immediately clear what to substitute. tldr-pages covers UNIX, Linux, macOS, FreeBSD, NetBSD, OpenBSD, SunOS, Android, Windows, Cisco IOS, and DOS command-line tools.
+
+## How pages are organized
+
+Pages live in a directory tree rooted at `pages/` for English content. Translation directories follow the naming pattern `pages.<locale>/` using [POSIX Locale Names](https://www.gnu.org/software/gettext/manual/html_node/Locale-Names.html) (e.g. `pages.fr` for French, `pages.zh_TW` for Chinese Taiwan, `pages.pt_BR` for Portuguese Brazil).
+
+Within each language directory, pages are grouped by **platform subdirectory**:
+
+```
+pages/
+├── common/       # Commands that work the same across platforms
+├── linux/        # Linux-specific commands
+├── osx/          # macOS-specific commands (alias: macos)
+├── windows/      # Windows-specific commands
+├── android/      # Android-specific commands
+├── freebsd/      # FreeBSD-specific commands
+├── openbsd/      # OpenBSD-specific commands
+├── netbsd/       # NetBSD-specific commands
+├── sunos/        # SunOS-specific commands
+├── cisco-ios/    # Cisco IOS commands
+└── dos/          # DOS commands
+
+pages.fr/         # French translations (same subdirectory structure)
+pages.de/         # German translations
+pages.zh_TW/      # Chinese (Taiwan) translations
+...
+```
+
+If a command behaves identically across most platforms but differs on one, the canonical page stays in `common/` and a platform-specific variant is placed in the relevant platform directory. Clients resolve which page to show based on the host platform, falling back to `common/` automatically.
+
+Page filenames map directly to command names, with spaces replaced by dashes:
+
+| Command | Filename |
+|---|---|
+| `tar` | `tar.md` |
+| `git checkout` | `git-checkout.md` |
+| `7za` | `7za.md` |
+
+## Supported platforms
+
+<CardGroup cols={3}>
+  <Card title="common" icon="globe">
+    Commands that work the same across more than one platform. This is the largest and most frequently used category.
+  </Card>
+  <Card title="linux" icon="linux">
+    Commands specific to Linux distributions, including package managers and system utilities.
+  </Card>
+  <Card title="osx / macos" icon="apple">
+    Commands specific to macOS. Clients support `macos` as an alias for `osx`.
+  </Card>
+  <Card title="windows" icon="windows">
+    Commands and utilities specific to Microsoft Windows, including PowerShell and CMD tools.
+  </Card>
+  <Card title="android" icon="mobile">
+    Commands available in Android environments such as Termux.
+  </Card>
+  <Card title="freebsd" icon="server">
+    Commands specific to the FreeBSD operating system.
+  </Card>
+  <Card title="openbsd" icon="shield">
+    Commands specific to the OpenBSD operating system.
+  </Card>
+  <Card title="netbsd" icon="server">
+    Commands specific to the NetBSD operating system.
+  </Card>
+  <Card title="sunos" icon="sun">
+    Commands specific to Oracle SunOS / Solaris environments.
+  </Card>
+  <Card title="cisco-ios" icon="network-wired">
+    Commands for Cisco IOS network device management.
+  </Card>
+  <Card title="dos" icon="terminal">
+    Classic DOS commands and batch scripting utilities.
+  </Card>
+</CardGroup>
+
+## Key features
+
+- **4,500+ pages** covering the most common command-line tools across all supported platforms
+- **40+ languages** — translations are contributed by the community and tracked at [tldri18n](https://lukwebsforge.github.io/tldri18n/)
+- **Offline caching via ZIP** — clients download a full archive from GitHub Releases so pages are available without an internet connection
+- **Official Client Specification v2.3** — a standardized spec that all compliant clients must implement, covering argument flags, page resolution, language detection, and caching
+- **Placeholder syntax** — editable values are wrapped in `{{double braces}}` so you can instantly spot what to replace, while `{{[-s|--longflag]}}` syntax lets clients display either short or long option forms
+- **Subcommand support** — multi-word commands like `git checkout` or `git status` each have their own dedicated page, stored as `git-checkout.md` and `git-status.md`
+
+<Tip>
+  Don't want to install anything? Try the web client at [https://tldr.inbrowser.app](https://tldr.inbrowser.app) — it's a Progressive Web App with full offline support, so you can even pin it to your home screen or desktop.
+</Tip>

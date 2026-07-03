@@ -1,0 +1,108 @@
+---
+title: "Language Detection and Page Selection in tldr Clients"
+sidebarTitle: "Language"
+description: "How tldr clients determine the preferred language using LANG and LANGUAGE environment variables, the priority list algorithm, and fallback to English."
+---
+
+tldr clients automatically detect the user's preferred language from environment variables and find the best available page translation. If no translation exists in the preferred language, clients always fall back to English to ensure a page is still served.
+
+## Environment variables
+
+Two standard POSIX environment variables drive language detection:
+
+<CardGroup cols={2}>
+  <Card title="LANG" icon="globe">
+    Specifies the user's preferred locale. Format: `ll[_CC][.encoding]`
+
+    - `ll` — [ISO 639](https://en.wikipedia.org/wiki/ISO_639) language code
+    - `CC` — optional [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) country code
+    - `.encoding` — optional encoding (e.g., `.UTF-8`)
+
+    Examples: `it`, `zh_TW`, `pt_BR`, `en_US.UTF-8`
+
+    The special values `C` and `POSIX` MUST be ignored.
+  </Card>
+  <Card title="LANGUAGE" icon="list">
+    Specifies a **priority list** of locales, separated by colons. Format: `l1:l2:l3:...`
+
+    This lets users specify fallback languages in order of preference.
+
+    Example: `it:fr:de` — try Italian first, then French, then German.
+
+    The special values `C` and `POSIX` MUST be ignored.
+  </Card>
+</CardGroup>
+
+## Language resolution algorithm
+
+Clients that have access to environment variables MUST use them to derive the preferred language using this algorithm:
+
+<Steps>
+  <Step title="Check LANG">
+    Check the value of `LANG`. If it is not set (or is `C`/`POSIX`), skip directly to step 5.
+  </Step>
+  <Step title="Extract the LANGUAGE priority list">
+    Read the value of `LANGUAGE`. If it is not set, start with an **empty** priority list.
+  </Step>
+  <Step title="Append LANG to the priority list">
+    Append the value of `LANG` to the end of the priority list assembled in step 2. This ensures the primary locale is always tried, even if it wasn't mentioned in `LANGUAGE`.
+  </Step>
+  <Step title="Follow the priority list">
+    Work through the priority list in order and use the first language for which a page is available.
+  </Step>
+  <Step title="Fall back to English">
+    If none of the languages in the priority list have a translation available, fall back to English (`pages/`). Clients MAY notify the user when a page in their preferred language cannot be found.
+  </Step>
+</Steps>
+
+## Priority list examples
+
+The table below shows the final language lookup order produced by various combinations of `LANG` and `LANGUAGE`:
+
+| `LANG` | `LANGUAGE` | Result (languages tried in order) |
+|--------|------------|-----------------------------------|
+| `cz` | `it:cz:de` | `it`, `cz`, `de`, `en` |
+| `cz` | `it:de:fr` | `it`, `de`, `fr`, `cz`, `en` |
+| `it` | unset | `it`, `en` |
+| unset | `it:cz` | `en` |
+| unset | unset | `en` |
+
+Note that when `LANG` is unset, the client skips to the English fallback (step 5) regardless of the contents of `LANGUAGE`.
+
+## Platform-language lookup order
+
+When resolving a page, platform takes precedence over language. The client checks **all preferred languages for a given platform** before moving to the next platform. This ensures that a more relevant (platform-specific) page in a secondary language is preferred over a less relevant (wrong platform) page in the primary language.
+
+The example below shows the full lookup order for a request on `linux` with `LANG=it` and `LANGUAGE="it:fr:en"`:
+
+| Step | Path checked | Outcome |
+|------|-------------|---------|
+| 1 | `pages.it/linux/some-page.md` | does not exist |
+| 2 | `pages.fr/linux/some-page.md` | does not exist |
+| 3 | `pages/linux/some-page.md` | does not exist |
+| 4 | `pages.it/common/some-page.md` | does not exist |
+| 5 | `pages.fr/common/some-page.md` | does not exist |
+| 6 | `pages/common/some-page.md` | **FOUND!** |
+
+The pattern is: for each platform in priority order (`linux`, then `common`), check every language (Italian → French → English) before advancing to the next platform.
+
+## Language override
+
+Clients SHOULD offer a `-L` / `--language` flag to allow users to explicitly set the page language from the command line:
+
+```bash
+tldr --language fr tar
+tldr -L zh_TW git-checkout
+```
+
+When this flag is specified, the client **MUST** strictly adhere to its value and **MUST NOT** fall back to another language or to English. If a page is not available in the specified language, the client should fail with an appropriate error message instead.
+
+## LC_MESSAGES
+
+The [`LC_MESSAGES`](https://www.gnu.org/software/gettext/manual/html_node/Locale-Environment-Variables.html) environment variable controls the language of the client's own user interface (error messages, prompts, etc.), separately from the language used to look up pages.
+
+If the client itself is localized and `LC_MESSAGES` is present, it **MAY** use that value to determine which language to display its own interface text in. In the absence of `LC_MESSAGES`, the client MUST use `LANG` and `LANGUAGE` for this purpose instead.
+
+<Tip>
+  Clients SHOULD offer a configuration file option to set the preferred language persistently, so users don't need to rely solely on environment variables. For example, a config entry like `language = fr` would be used as the default language on every invocation without requiring environment variable changes.
+</Tip>

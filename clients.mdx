@@ -1,0 +1,112 @@
+---
+title: "tldr-pages Clients: Every Platform and Interface"
+sidebarTitle: "Clients"
+description: "Browse official and community tldr clients for the command line, web, mobile, and desktop. Find the right client for your operating system and workflow."
+---
+
+tldr-pages ships three official clients maintained by the tldr-pages organization, and a rich ecosystem of community-contributed clients covering every platform and workflow imaginable — from terminal emulators and shell plugins to mobile apps, editors, and browser extensions. All compliant clients follow the [Client Specification v2.3](/spec/overview), which standardizes argument flags, page resolution, language detection, and offline caching behavior.
+
+<Note>
+  All official and compliant community clients implement the **Client Specification v2.3**, which defines required and optional behaviors including the `-p`/`--platform`, `-L`/`--language`, `-u`/`--update`, and `-l`/`--list` flags, as well as page resolution order and ZIP-based caching. See the full spec at [/spec/overview](/spec/overview).
+</Note>
+
+## Official clients
+
+The following clients are developed and maintained by the tldr-pages organization.
+
+<CardGroup cols={2}>
+  <Card title="Python client" icon="python" href="https://github.com/tldr-pages/tldr-python-client">
+    The original official client, installable from PyPI.
+
+    ```shell
+    pipx install tldr
+    ```
+
+    Also available via pip and other package managers. See the [installation docs](https://github.com/tldr-pages/tldr-python-client#installation) for the full list.
+  </Card>
+  <Card title="Rust client (tlrc)" icon="cog" href="https://github.com/tldr-pages/tlrc">
+    The recommended client for Linux, macOS, and Windows. Fast, actively maintained.
+
+    ```shell
+    # macOS / Linux via Homebrew
+    brew install tlrc
+
+    # Any platform via Cargo
+    cargo install tlrc --locked
+
+    # Windows via Winget
+    winget install tldr-pages.tlrc
+    ```
+
+    Additional package managers listed in the [tlrc installation docs](https://github.com/tldr-pages/tlrc#installation).
+  </Card>
+  <Card title="Node.js client" icon="node-js" href="https://github.com/tldr-pages/tldr-node-client">
+    The Node.js-based client, installable via npm.
+
+    ```shell
+    npm install -g tldr
+    ```
+
+    Requires Node.js and npm. Note that this client has fallen behind the others in updates — the Rust or Python client is recommended for new users.
+  </Card>
+</CardGroup>
+
+## Web clients
+
+No installation required — access tldr-pages directly in your browser.
+
+**[tldr.inbrowser.app](https://tldr.inbrowser.app)** is the official web client. It is a Progressive Web App (PWA) with full offline support, meaning you can install it to your home screen or desktop and continue using it without an internet connection. Search any command name and get the same clear, example-focused output you'd see in the terminal.
+
+## Choosing a client
+
+<AccordionGroup>
+  <Accordion title="Which client should I use on macOS or Linux?">
+    The **Rust client (tlrc)** via Homebrew is the recommended choice for macOS and Linux:
+
+    ```shell
+    brew install tlrc
+    ```
+
+    It is fast, actively maintained, and fully compliant with Client Specification v2.3. If you don't use Homebrew, you can install it via Cargo (`cargo install tlrc --locked`) or check the [tlrc installation docs](https://github.com/tldr-pages/tlrc#installation) for other package managers.
+  </Accordion>
+  <Accordion title="Which client should I use on Windows?">
+    The **Rust client (tlrc)** via Winget is the recommended choice on Windows:
+
+    ```shell
+    winget install tldr-pages.tlrc
+    ```
+
+    Additional Windows package managers (Scoop, Chocolatey, etc.) are listed in the [tlrc installation docs](https://github.com/tldr-pages/tlrc#installation).
+  </Accordion>
+  <Accordion title="Is there a client with offline support?">
+    Yes — all three official CLI clients support local caching. After installation, run:
+
+    ```shell
+    tldr --update
+    ```
+
+    This downloads the full tldr-pages ZIP archive from [GitHub Releases](https://github.com/tldr-pages/tldr/releases/latest) to a local cache directory. Subsequent lookups are served from the cache, with no internet connection required.
+
+    The web client at [tldr.inbrowser.app](https://tldr.inbrowser.app) also supports offline use through its PWA service worker.
+  </Accordion>
+  <Accordion title="Where can I find more community clients?">
+    The tldr-pages community wiki maintains a comprehensive, up-to-date list of clients for all platforms and interfaces:
+
+    **[https://github.com/tldr-pages/tldr/wiki/Clients](https://github.com/tldr-pages/tldr/wiki/Clients)**
+
+    The wiki includes clients for Android, iOS, Zsh, Fish shell, Vim, Emacs, and many more.
+  </Accordion>
+</AccordionGroup>
+
+## Community clients
+
+Beyond the official clients, the community has built tldr integrations for virtually every environment:
+
+- **Mobile** — Android and iOS apps for on-the-go reference
+- **Shell plugins** — Zsh and Fish shell plugins that integrate tldr directly into your shell completion and help systems
+- **Editors** — Vim and Emacs plugins for looking up commands without leaving your editor
+- **Other interfaces** — browser extensions, desktop GUI apps, and more
+
+The full and continuously updated list is maintained on the community wiki:
+
+**[https://github.com/tldr-pages/tldr/wiki/Clients](https://github.com/tldr-pages/tldr/wiki/Clients)**

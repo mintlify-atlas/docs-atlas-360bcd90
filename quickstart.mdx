@@ -1,47 +1,157 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get Started with tldr-pages in Minutes"
+sidebarTitle: "Quickstart"
+description: "Install a tldr client on Linux, macOS, or Windows and look up your first command. Get working with tldr-pages in under 5 minutes."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+tldr gives you instant, example-focused help for any CLI command — no scrolling through dense man pages, no searching Stack Overflow. Type `tldr <command>` and you get the most practical usage patterns right in your terminal, with clear placeholders showing exactly what to substitute.
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Install a tldr client">
+    Choose the client that fits your environment. The official Rust client (`tlrc`) and Python client are the most actively maintained.
 
-    ```bash
-    npm install your-package
-    ```
+    <Tabs>
+      <Tab title="Python (pipx)">
+        ```shell
+        pipx install tldr
+        ```
+        Requires [pipx](https://github.com/pypa/pipx). Also available via other package managers — see the [Python client repository](https://github.com/tldr-pages/tldr-python-client#installation) for the full list.
+      </Tab>
+      <Tab title="Rust / Homebrew">
+        ```shell
+        brew install tlrc
+        ```
+        Recommended for macOS and Linux users with [Homebrew](https://brew.sh/) installed. Installs the official [Rust client (tlrc)](https://github.com/tldr-pages/tlrc).
+      </Tab>
+      <Tab title="Rust / Cargo">
+        ```shell
+        cargo install tlrc --locked
+        ```
+        Builds from source using [Cargo](https://doc.rust-lang.org/cargo/). Works on any platform with a Rust toolchain installed.
+      </Tab>
+      <Tab title="Windows / Winget">
+        ```shell
+        winget install tldr-pages.tlrc
+        ```
+        Installs the official [Rust client (tlrc)](https://github.com/tldr-pages/tlrc) via the [Windows Package Manager](https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/tldr-pages/tlrc). Additional Windows package managers are listed in the [tlrc installation docs](https://github.com/tldr-pages/tlrc#installation).
+      </Tab>
+      <Tab title="Node.js (npm)">
+        ```shell
+        npm install -g tldr
+        ```
+        Installs the [Node.js client](https://github.com/tldr-pages/tldr-node-client) globally. Requires Node.js and npm.
+      </Tab>
+    </Tabs>
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
 
-    ```bash
-    your-cli init
+  <Step title="Look up a command">
+    Once installed, look up any command by passing its name to `tldr`. For example:
+
+    ```shell
+    tldr tar
     ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
 
-    ```bash
-    your-cli start
+    You'll see output like this:
+
+    ```text
+    tar
+
+      Archiving utility.
+      Often combined with a compression method, such as gzip or bzip2.
+      More information: https://www.gnu.org/software/tar/manual/tar.html.
+
+      - Create an archive and write it to a file:
+        tar cf path/to/target.tar path/to/file1 path/to/file2 ...
+
+      - Create a gzipped archive and write it to a file:
+        tar czf path/to/target.tar.gz path/to/file1 path/to/file2 ...
+
+      - Create a gzipped archive from a directory using relative paths:
+        tar czf path/to/target.tar.gz --directory path/to/directory .
+
+      - Extract a (compressed) archive file into the current directory verbosely:
+        tar xvf path/to/source.tar[.gz|.bz2|.xz]
+
+      - Extract a (compressed) archive file into the target directory:
+        tar xf path/to/source.tar[.gz|.bz2|.xz] --directory path/to/directory
+
+      - List the contents of a tar file verbosely:
+        tar tvf path/to/source.tar
+
+      - Extract files matching a pattern from an archive file:
+        tar xf path/to/source.tar --wildcards "*.html"
+    ```
+
+    Editable values are shown without braces — replace them with your actual paths and filenames.
+  </Step>
+
+  <Step title="Update your local cache">
+    tldr clients cache pages locally so you can use them offline. Keep your cache up to date with:
+
+    ```shell
+    tldr --update
+    ```
+
+    Or using the short flag:
+
+    ```shell
+    tldr -u
+    ```
+
+    The client downloads the latest ZIP archive from the [tldr-pages GitHub Releases](https://github.com/tldr-pages/tldr/releases/latest) and stores it locally.
+  </Step>
+
+  <Step title="Explore by platform">
+    By default, tldr shows pages for your current platform. You can explicitly target a different platform with `--platform` (or `-p`), and list all available pages with `--list` (or `-l`):
+
+    ```shell
+    # Show the Linux-specific page for bash
+    tldr --platform linux bash
+
+    # List all pages available on the current platform
+    tldr --list
+    ```
+
+    Use `common` as the platform name to see the cross-platform version of a command even when a platform-specific variant exists:
+
+    ```shell
+    tldr --platform common tar
     ```
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Common usage patterns
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+```shell
+# Look up a subcommand — spaces are automatically converted to dashes
+tldr git checkout
+
+# Look up a command for a specific platform
+tldr --platform osx bash
+
+# Look up a command in a specific language (French)
+tldr -L fr tar
+
+# List all pages available for the current platform
+tldr --list
+
+# Show the version of the client and the spec it implements
+tldr --version
+```
+
+## Offline PDF
+
+Prefer a printable reference? The entire tldr-pages collection is compiled into a downloadable PDF at every release:
+
+**[Download tldr-book.pdf](https://github.com/tldr-pages/tldr/releases/latest/download/tldr-book.pdf)**
+
+PDFs for translated languages are also available — check the assets section of the [latest release](https://github.com/tldr-pages/tldr/releases/latest) for your language.
+
+<CardGroup cols={2}>
+  <Card title="Clients" icon="terminal" href="/clients">
+    Browse all official and community tldr clients for the command line, web, mobile, and desktop.
+  </Card>
+  <Card title="Introduction" icon="book-open" href="/introduction">
+    Learn how tldr-pages is organized, what platforms it supports, and how the page format works.
+  </Card>
+</CardGroup>

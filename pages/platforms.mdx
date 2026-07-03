@@ -1,0 +1,110 @@
+---
+title: "Platform Directories and Page Organization"
+sidebarTitle: "Platforms"
+description: "Learn how tldr-pages organizes command pages by platform: common, linux, osx, windows, android, and more. Understand when to use each directory."
+---
+
+tldr-pages organises command pages into platform directories so clients can automatically show the most relevant version for the user's operating system. When you run `tldr tar` on Linux you see the Linux-appropriate page; when another user runs the same command on macOS they see the macOS-appropriate variant — all without any extra flags.
+
+## Directory structure
+
+The English pages live under the top-level `pages/` directory, which contains one sub-directory per supported platform:
+
+```text
+pages/
+├── common/      # Commands available on 2+ platforms
+├── linux/
+├── osx/         # macOS (alias: macos)
+├── windows/
+├── android/
+├── freebsd/
+├── openbsd/
+├── netbsd/
+├── sunos/
+├── cisco-ios/
+└── dos/
+```
+
+Each sub-directory contains `.md` files named after the commands they document (e.g. `tar.md`, `git-commit.md`). The filename must always be lowercase.
+
+## Choosing a platform directory
+
+<Steps>
+  <Step title="Available on two or more platforms? → common/">
+    If a command works the same way on two or more platforms, place the page in `common/`. This is the most common case for widely-used Unix utilities (`tar`, `grep`, `curl`, etc.).
+  </Step>
+  <Step title="Only available on one platform? → that platform's directory">
+    If a command exists exclusively on one platform, place it in the matching directory. For example, a command that only exists on macOS goes in `osx/`, and a Windows-only PowerShell cmdlet goes in `windows/`.
+  </Step>
+  <Step title="Common command with platform-specific differences? → both">
+    If a command lives in `common/` but behaves differently on one specific platform, keep the `common/` page **and** add a separate page in the platform-specific directory that documents the differing behaviour. Clients will prefer the platform-specific page on that OS and fall back to `common/` on all others.
+  </Step>
+</Steps>
+
+## Platform overview
+
+<CardGroup cols={3}>
+  <Card title="common" icon="globe">
+    Commands available identically on two or more platforms. The default fallback for all clients.
+  </Card>
+  <Card title="linux" icon="linux">
+    Commands specific to any Linux distribution, including distro-specific package managers and utilities.
+  </Card>
+  <Card title="osx" icon="apple">
+    Commands specific to macOS (formerly OS X). The alias `macos` is also recognised by clients.
+  </Card>
+  <Card title="windows" icon="windows">
+    Commands for Windows, including PowerShell cmdlets and `cmd.exe` built-ins.
+  </Card>
+  <Card title="android" icon="mobile">
+    Commands available in Android environments, such as those used via Termux or ADB shells.
+  </Card>
+  <Card title="freebsd" icon="server">
+    Commands specific to the FreeBSD operating system.
+  </Card>
+  <Card title="openbsd" icon="shield">
+    Commands specific to OpenBSD, including its security-focused utilities.
+  </Card>
+  <Card title="netbsd" icon="server">
+    Commands specific to NetBSD.
+  </Card>
+  <Card title="sunos" icon="sun">
+    Commands specific to SunOS / Oracle Solaris.
+  </Card>
+  <Card title="cisco-ios" icon="network-wired">
+    Commands for the Cisco IOS network operating system.
+  </Card>
+  <Card title="dos" icon="terminal">
+    Commands for MS-DOS, DOSBox, and FreeDOS environments.
+  </Card>
+</CardGroup>
+
+## Platform fallback in clients
+
+When a user requests a page, clients resolve it using the following order of preference:
+
+1. **Host platform** — check the directory matching the user's current OS first (e.g. `linux/` on a Linux machine).
+2. **`common/`** — if the page is not found in the host platform directory, fall back to `common/`.
+3. **Other platforms** — if the page is still not found, search all remaining platform directories and display the first match **along with a warning** that the page may not apply to the user's OS.
+
+For example, a Windows user requesting `apt` will find nothing in `windows/`, nothing in `common/`, and eventually find it in `linux/` — at which point the client should warn that the page is from a different platform.
+
+Clients **should** support `macos` as an alias for `osx` so that users on modern macOS systems can use the natural name.
+
+## Language-specific directories
+
+Translated pages live alongside `pages/` in directories named `pages.<locale>` — for example `pages.fr/`, `pages.zh/`, `pages.pt_BR/`. Each translation directory mirrors the exact same platform sub-directory structure as the English `pages/` directory:
+
+```text
+pages.fr/
+├── common/
+├── linux/
+├── osx/
+└── ...
+```
+
+A page need not be translated in every language; if a translation does not exist, clients fall back to the English page. For guidance on adding or updating translations, see [Translations](/contributing/translations).
+
+<Note>
+The client specification requires that clients **must not break** when new platform directories are added to tldr-pages. It is recommended that clients detect new platforms automatically by scanning the `pages/` directory, rather than maintaining a hard-coded list of supported platforms.
+</Note>

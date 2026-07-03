@@ -1,0 +1,106 @@
+---
+title: "tldr-pages Client Specification v2.3 Overview"
+sidebarTitle: "Overview"
+description: "The official tldr-pages client specification (v2.3) defines how compliant clients must behave. This overview covers terminology, versioning, and what it means to be compliant."
+---
+
+The tldr-pages client specification (currently v2.3) defines the standard interface that all compliant clients must implement. It ensures consistent behavior across the full ecosystem of clients — including those written in Python, Rust, Node.js, and other community implementations — so that users have a predictable experience regardless of which client they use. This document is a specification of the _client interface only_, not of the page format itself.
+
+## Current version
+
+The current specification is **v2.3**, released on **March 7, 2025**.
+
+<Note>
+  For a full list of changes across all versions, see the [Changelog
+  summary](#changelog-summary) below. Each version tag also links to the
+  corresponding snapshot of the specification on
+  [GitHub](https://github.com/tldr-pages/tldr/blob/main/CLIENT-SPECIFICATION.md#changelog).
+</Note>
+
+## Key terminology
+
+Two core terms are used throughout the specification:
+
+- **Page** — A file that describes a specific command. Each page documents one command with a short description and practical examples. For instance, `tar.md` is the page for the `tar` command.
+
+- **Platform** — The operating system grouping under which pages are organized. Examples include `linux`, `windows`, `osx`, and `common`. The special platform `common` contains pages for commands that work identically across more than one platform.
+
+## Specification sections
+
+The full specification is split into focused sections. Use the cards below to navigate to each one:
+
+<CardGroup cols={2}>
+  <Card title="CLI Interface" icon="terminal" href="/spec/cli-interface">
+    Required and optional command-line arguments, page name handling, TTY
+    behavior, and example invocations.
+  </Card>
+  <Card title="Page Resolution" icon="magnifying-glass" href="/spec/page-resolution">
+    The algorithm clients use to find the correct page based on platform and
+    language, including fallback behavior.
+  </Card>
+  <Card title="Language Handling" icon="language" href="/spec/language">
+    How clients determine the user's preferred language from environment
+    variables, and how to fall back to English.
+  </Card>
+  <Card title="Caching" icon="database" href="/spec/caching">
+    Recommendations and requirements for caching page archives locally,
+    including the official archive download URLs.
+  </Card>
+</CardGroup>
+
+## Changelog summary
+
+A history of all specification versions and their notable changes:
+
+<Accordion title="v2.3 — March 7, 2025">
+  - Added longform/shortform option specifications: clients now support `--short-options` and `--long-options` flags, and SHOULD display only the longform option by default.
+  - Specified `common` as a supported argument to the `--platform` flag.
+  - Added the confirmed date of removal of the old `tldr.sh/assets` archive location.
+  - Various grammar fixes.
+</Accordion>
+
+<Accordion title="v2.2 — March 20, 2024">
+  - Updated asset URLs to use GitHub releases (`github.com/tldr-pages/tldr/releases/latest/download/...`).
+  - Added a requirement to disambiguate triple-brace placeholders.
+  - Added a deprecation notice for the old `tldr.sh/assets` URL.
+</Accordion>
+
+<Accordion title="v2.1 — November 30, 2023">
+  - Added a requirement to support escaping the placeholder syntax (i.e. `\{\{` and `\}\}`) in page examples.
+  - Added a suggestion to automatically detect new platforms added to the `pages` directory.
+</Accordion>
+
+<Accordion title="v2.0 — September 10, 2023">
+  - Added a recommendation to support `macos` as an alias for `osx`.
+  - Dropped the special `all` platform from the `--list` flag.
+  - Required support for long options (e.g. `--version`, `--platform`).
+  - Added a recommendation to support caching individual translation archives.
+</Accordion>
+
+<Accordion title="v1.5 — March 17, 2021">
+  - Added a requirement to convert command names to lowercase before running the page resolution algorithm (e.g. `eyeD3` → `eyed3`).
+  - Updated archive links to use HTTPS.
+</Accordion>
+
+<Accordion title="v1.4 — August 13, 2020">
+  - Added a requirement for CLI clients to exit with a non-zero exit code when a requested page cannot be found.
+</Accordion>
+
+## RFC 2119 keywords
+
+Throughout the specification, requirement-level keywords such as **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **RECOMMENDED**, **MAY**, and **OPTIONAL** are used as defined in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+
+In short:
+
+- **MUST** / **REQUIRED** / **SHALL** — an absolute requirement.
+- **MUST NOT** / **SHALL NOT** — an absolute prohibition.
+- **SHOULD** / **RECOMMENDED** — strongly advised but not strictly required; there may be valid reasons to deviate.
+- **MAY** / **OPTIONAL** — truly optional; implementations may include or omit as they see fit.
+
+<Tip>
+  If you are building a new tldr client, review the existing official and
+  community clients on the [tldr-pages GitHub
+  repository](https://github.com/tldr-pages/tldr) as reference implementations.
+  They demonstrate how the specification translates into working code across
+  multiple languages and platforms.
+</Tip>

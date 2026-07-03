@@ -1,0 +1,166 @@
+---
+title: "Documenting Subcommands in tldr-pages"
+sidebarTitle: "Subcommands"
+description: "Learn how to create tldr pages for programs with subcommands like git commit and docker container rm, using dash-separated filenames and reference patterns."
+---
+
+Many CLI tools split their functionality across subcommands — `git commit`, `git push`, `docker container ls`, and so on. tldr-pages handles these with a simple dash-separated naming convention that lets clients resolve multi-word invocations transparently, and a set of patterns for cross-referencing the base page with its subcommand pages.
+
+## Naming convention
+
+Subcommand pages use a dash-separated filename: spaces in the command are replaced with dashes, and the whole name is lowercased.
+
+```text
+git-commit.md          → shown when user runs: tldr git commit
+git-push.md            → shown when user runs: tldr git push
+docker-container-rm.md → shown when user runs: tldr docker container rm
+```
+
+The page title inside the file follows the same rule — it must match the filename (minus `.md`):
+
+```markdown
+# git-commit
+```
+
+This mapping is handled transparently by clients: `tldr git commit` is equivalent to `tldr git-commit` because clients replace spaces with dashes and lowercase the result before resolving the page.
+
+## Always create a base page
+
+Every program that has subcommand pages must also have a **base page** for the top-level command itself. The base page should describe the program at a high level and document fundamental flags such as `--version` and `--help`. It should also signal to users that subcommand-specific pages exist.
+
+The `git.md` page is the canonical example:
+
+```markdown
+# git
+
+> Distributed version control system.
+> Some subcommands such as `commit`, `add`, `branch`, `switch`, `push`, etc. have their own usage documentation.
+> More information: <https://git-scm.com/docs/git>.
+
+- Create an empty Git repository:
+
+`git init`
+
+- Clone a remote Git repository from the internet:
+
+`git clone {{https://example.com/repo.git}}`
+
+- View the status of the local repository:
+
+`git status`
+
+- Stage all changes for a commit:
+
+`git add {{[-A|--all]}}`
+
+- Commit changes to version history:
+
+`git commit {{[-m|--message]}} {{message_text}}`
+
+- Push local commits to a remote repository:
+
+`git push`
+
+- Pull any changes made to a remote:
+
+`git pull`
+
+- Reset everything the way it was in the latest commit:
+
+`git reset --hard; git clean {{[-f|--force]}}`
+```
+
+Notice that `git.md` covers the most common top-level operations, and the description block's subcommand notice (`Some subcommands such as …`) points readers toward the dedicated subcommand pages.
+
+## Referencing subcommands
+
+There are three accepted patterns for connecting the base page to its subcommand pages:
+
+<Steps>
+  <Step title="Subcommand notice in the description block">
+    Add a line to the description block noting that subcommand-specific pages exist. Only the subcommand name is listed (e.g. `commit`, not `git commit`):
+
+    ```markdown
+    > Some subcommands such as `commit`, `add`, `branch` have their own usage documentation.
+    ```
+
+    This is the pattern used by `git.md` and is the most common approach for large tools with many subcommands.
+  </Step>
+  <Step title="See also reference">
+    Use the `See also:` template in the description block to link to closely related commands, aliases, or subcommands:
+
+    ```markdown
+    > See also: `git-commit`, `git-push`, `git-pull`.
+    ```
+
+    This works well when the base page and its subcommand pages are closely paired or when the subcommand set is small.
+  </Step>
+  <Step title="Convert the base page into a subcommand index">
+    When the top-level command has no useful behaviour on its own, convert the entire base page into a directory that points users to the subcommand pages:
+
+    ```markdown
+    # command
+
+    > Short, snappy description.
+    > Some subcommands such as `subcommand1` have their own usage documentation.
+    > More information: <https://url>.
+
+    - View documentation for creating something:
+
+    `tldr command-subcommand1`
+
+    - View documentation for managing something:
+
+    `tldr command-subcommand2`
+    ```
+
+    Each example uses `tldr command-subcommand` as the command itself, directing users to the appropriate page.
+  </Step>
+</Steps>
+
+## Full subcommand page example
+
+A complete template for a subcommand page that uses the index pattern:
+
+```markdown
+# command
+
+> Short, snappy description.
+> Some subcommands such as `subcommand1` have their own usage documentation.
+> More information: <https://url>.
+
+- View documentation for a specific subcommand:
+
+`tldr command-subcommand1`
+```
+
+For a real-world example of this index pattern, see `pages/common/git.md` in the repository, as well as `pages/linux/nmcli.md`.
+
+## Name collisions
+
+When two completely different programs share the same command name, they cannot both be stored as `command.md`. The solution is to:
+
+1. Rename both pages using an appropriate suffix — a **number** (`command.1.md`, `command.2.md`) or a **language/ecosystem identifier** (`command.js.md`).
+2. Create (or repurpose) the bare `command.md` as a **disambiguation page** that lists both and points users to the correct one.
+
+The `just.md` page in `pages/common/` is the reference example for this pattern:
+
+```markdown
+# just
+
+> `just` can refer to multiple commands with the same name.
+
+- View documentation for the command runner:
+
+`tldr just.1`
+
+- View documentation for the V8 JavaScript runtime:
+
+`tldr just.js`
+```
+
+The actual content for each program lives in `just.1.md` and `just.js.md` respectively.
+
+<Tip>
+Calling `tldr git commit` is exactly equivalent to `tldr git-commit`. Clients transparently replace spaces with dashes and lowercase the entire name before looking up the page, so users never need to know the underlying filename convention.
+</Tip>

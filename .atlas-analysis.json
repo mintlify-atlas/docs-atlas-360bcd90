@@ -1,0 +1,99 @@
+{
+  "projectType": "general",
+  "projectName": "tldr-pages",
+  "projectDescription": "A collaborative, community-maintained collection of simplified and practical cheatsheet pages for command-line tools, designed as a friendlier complement to traditional man pages.",
+  "theme": "palm",
+  "primaryColor": "#233453",
+  "lightColor": "#72b3aa",
+  "darkColor": "#3c646c",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "clients"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/overview",
+              "contributing/style-guide",
+              "contributing/page-format",
+              "contributing/translations",
+              "contributing/submitting-a-pr"
+            ]
+          },
+          {
+            "group": "Page Structure",
+            "pages": [
+              "pages/anatomy",
+              "pages/placeholders",
+              "pages/platforms",
+              "pages/subcommands"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "community/governance",
+              "community/roles",
+              "community/maintainers-guide"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Client Specification",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "spec/overview",
+              "spec/cli-interface"
+            ]
+          },
+          {
+            "group": "Page Resolution",
+            "pages": [
+              "spec/page-resolution",
+              "spec/language",
+              "spec/caching"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Over 4,500+ community-maintained cheatsheet pages for common CLI commands",
+    "Multi-platform support: Linux, macOS, Windows, Android, BSD, and more",
+    "Multilingual pages in 40+ languages",
+    "Standardized Markdown page format with practical usage examples",
+    "Official client specification (v2.3) for building compatible clients",
+    "Placeholder syntax for editable values in command examples",
+    "Offline caching support via downloadable ZIP archives",
+    "Subcommand grouping and alias page support",
+    "Community-driven governance with open contributions via GitHub"
+  ],
+  "publicApiSurface": [
+    "tldr <command> — look up a page",
+    "tldr --version / -v — show client version",
+    "tldr --platform / -p <platform> — specify platform",
+    "tldr --update / -u — update offline cache",
+    "tldr --list / -l — list all pages for current platform",
+    "tldr --language / -L <locale> — override display language",
+    "tldr --short-options — filter examples to show shortform options",
+    "tldr --long-options — filter examples to show longform options",
+    "Cache archive: https://github.com/tldr-pages/tldr/releases/latest/download/tldr.zip",
+    "Language-specific archive: https://github.com/tldr-pages/tldr/releases/latest/download/tldr-pages.{{language-code}}.zip",
+    "Page format: CommonMark Markdown with {{placeholder}} and {{[short|long]}} syntax",
+    "Directory structure: pages/<platform>/<command>.md",
+    "Translation directories: pages.<locale>/<platform>/<command>.md"
+  ]
+}

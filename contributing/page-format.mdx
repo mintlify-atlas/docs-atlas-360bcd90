@@ -1,0 +1,309 @@
+---
+title: "tldr Page Markdown Format Reference"
+sidebarTitle: "Page Format"
+description: "Complete reference for the Markdown format used in tldr pages, including the title, description, example blocks, placeholder syntax, and subcommand references."
+---
+
+All tldr pages use a specific Markdown format that clients parse and render into a consistent, readable layout. This reference covers every component of that format so you can write and review pages with confidence.
+
+## The full template
+
+```markdown
+# command-name
+
+> Short, snappy description.
+> Preferably one line; two are acceptable if necessary.
+> More information: <https://url-to-upstream.tld>.
+
+- Example description:
+
+`command --option`
+
+- Example description:
+
+`command --option1 --option2 {{arg_value}}`
+```
+
+Each section is described in detail below.
+
+## Title
+
+The title is a **single level-1 heading** (`#`) containing the command name:
+
+```markdown
+# tar
+```
+
+- The heading may use any casing the command itself uses.
+- The **filename** (e.g. `tar.md`) must be **lowercase** and must match the command name exactly.
+- For subcommands, separate the program and subcommand with a dash: `git-commit.md` is shown when a user runs `tldr git commit`.
+
+## Description block
+
+The description block is made up of one or more `>` blockquote lines immediately following the title. The first line is a short, single-sentence description of the command. A second line is acceptable when strictly necessary.
+
+```markdown
+> Short, snappy description.
+> More information: <https://url-to-upstream.tld>.
+```
+
+### More information link
+
+A `More information:` line provides a direct link to the upstream documentation. All links **must** be enclosed in angle brackets (`<` and `>`) for proper rendering in clients:
+
+```markdown
+> More information: <https://www.gnu.org/software/tar/manual/tar.html>.
+```
+
+When no official documentation exists, use [https://manned.org](https://manned.org) as the fallback (except for `osx` and BSD platforms other than FreeBSD).
+
+### See also references
+
+Use `See also:` to reference related commands, aliases, or subcommands:
+
+```markdown
+> See also: `gimp`.
+```
+
+```markdown
+> See also: `command1`, `command2`, `command3`.
+```
+
+### Subcommand references
+
+When a command has subcommands with their own pages, call this out in the description:
+
+```markdown
+> Some subcommands such as `commit`, `add`, `branch`, `switch`, `push`, etc. have their own usage documentation.
+```
+
+#### Heading order
+
+The recommended order of heading lines is:
+
+```markdown
+> Short description of the functionality.
+> Further clarification of the functionality.
+> Note: Any note for the usage.
+> Some subcommands such as `subcommand1`, `subcommand2` have their own usage documentation.
+> See also: `command`.
+> More information: <https://example.com>.
+```
+
+## Example blocks
+
+Each example consists of two parts:
+
+1. A **bullet description** on a `-` list item, ending with a colon.
+2. A **command** on the very next line, wrapped in backticks.
+
+```markdown
+- [c]reate an archive and write it to a [f]ile:
+
+`tar cf {{path/to/target.tar}} {{path/to/file1 path/to/file2 ...}}`
+```
+
+There must be a blank line between the description and the command, and another blank line between consecutive examples.
+
+- **Preferred number of examples:** ~5
+- **Maximum examples:** 8
+
+## Placeholders
+
+User-provided values are written as `{{placeholder}}` — the double curly braces signal to clients that this is something the user must fill in.
+
+```markdown
+`sleep {{5}}`
+```
+
+### Path placeholders
+
+For file and directory paths, use the `path/to/` prefix pattern:
+
+| Placeholder | Usage |
+|---|---|
+| `{{filename}}` | Just the file name, no directory component |
+| `{{path/to/file}}` | A path to a file |
+| `{{path/to/directory}}` | A path to a directory |
+| `{{path/to/file_or_directory}}` | Either a file or a directory |
+
+When a path must be absolute (starting at the filesystem root), prefix the slash **outside** the placeholder:
+
+```markdown
+get /{{path/to/remote_file}}
+```
+
+### File extension placeholders
+
+- Append the extension **inside** the placeholder when the command accepts related variations:
+  ```markdown
+  `unrar x {{path/to/archive.rar}}`
+  ```
+- Keep the extension **outside** the placeholder when it is strictly mandatory:
+  ```markdown
+  `java -jar {{path/to/filename}}.jar`
+  ```
+
+### Option placeholders
+
+Use `{{[-s|--long]}}` to let the client display either the short or long form:
+
+```markdown
+`tar xf {{path/to/source.tar[.gz|.bz2|.xz]}} {{[-C|--directory]}} {{path/to/directory}}`
+```
+
+### Multiple arguments
+
+Use an ellipsis inside the placeholder to indicate one or more values of the same kind:
+
+```markdown
+`tar cf {{path/to/target.tar}} {{path/to/file1 path/to/file2 ...}}`
+```
+
+### Mutually exclusive values
+
+Separate mutually exclusive choices with a pipe character:
+
+```markdown
+`{{value1|value2|value3}}`
+```
+
+If there are more than three choices, use `|...` after the last item.
+
+### Value ranges
+
+Use two dots to express a range:
+
+```markdown
+`{{1..5}}`
+`{{a..z}}`
+```
+
+### Escaping curly braces
+
+If you need to display a literal `{{` or `}}` in a command (i.e. it is not a placeholder), escape them with backslashes: `\{\{` and `\}\}`.
+
+### Placeholder naming
+
+- Use `snake_case` for multi-word placeholders: `{{source_file}}`, `{{target_directory}}`.
+- Keep names short but descriptive: `{{path/to/wallet.txt}}` rather than `{{path/to/file}}` when the context calls for a wallet file.
+- Enclose string placeholders in quotes in the command: `"{{search_pattern}}"` (not `{{"search_pattern"}}`).
+
+### Do not use placeholders for fixed values
+
+If the description already specifies a value explicitly, write it directly in the command without a placeholder:
+
+```markdown
+- Refresh the output every 2 seconds:
+
+`free {{[-s|--seconds]}} 2`
+```
+
+## Real page examples
+
+### tar — page with placeholders
+
+```markdown
+# tar
+
+> Archiving utility.
+> Often combined with a compression method, such as `gzip` or `bzip2`.
+> More information: <https://www.gnu.org/software/tar/manual/tar.html>.
+
+- [c]reate an archive and write it to a [f]ile:
+
+`tar cf {{path/to/target.tar}} {{path/to/file1 path/to/file2 ...}}`
+
+- [c]reate a g[z]ipped archive and write it to a [f]ile:
+
+`tar czf {{path/to/target.tar.gz}} {{path/to/file1 path/to/file2 ...}}`
+
+- [c]reate a g[z]ipped (compressed) archive from a directory using relative paths:
+
+`tar czf {{path/to/target.tar.gz}} {{[-C|--directory]}} {{path/to/directory}} .`
+
+- E[x]tract a (compressed) archive [f]ile into the current directory [v]erbosely:
+
+`tar xvf {{path/to/source.tar[.gz|.bz2|.xz]}}`
+
+- E[x]tract a (compressed) archive [f]ile into the target directory:
+
+`tar xf {{path/to/source.tar[.gz|.bz2|.xz]}} {{[-C|--directory]}} {{path/to/directory}}`
+
+- [c]reate a compressed archive and write it to a [f]ile, using the file extension to [a]utomatically determine the compression program:
+
+`tar caf {{path/to/target.tar.xz}} {{path/to/file1 path/to/file2 ...}}`
+
+- Lis[t] the contents of a tar [f]ile [v]erbosely:
+
+`tar tvf {{path/to/source.tar}}`
+
+- E[x]tract files matching a pattern from an archive [f]ile:
+
+`tar xf {{path/to/source.tar}} --wildcards "{{*.html}}"`
+```
+
+### git — page with subcommand references
+
+```markdown
+# git
+
+> Distributed version control system.
+> Some subcommands such as `commit`, `add`, `branch`, `switch`, `push`, etc. have their own usage documentation.
+> More information: <https://git-scm.com/docs/git>.
+
+- Create an empty Git repository:
+
+`git init`
+
+- Clone a remote Git repository from the internet:
+
+`git clone {{https://example.com/repo.git}}`
+
+- View the status of the local repository:
+
+`git status`
+
+- Stage all changes for a commit:
+
+`git add {{[-A|--all]}}`
+
+- Commit changes to version history:
+
+`git commit {{[-m|--message]}} {{message_text}}`
+
+- Push local commits to a remote repository:
+
+`git push`
+
+- Pull any changes made to a remote:
+
+`git pull`
+
+- Reset everything the way it was in the latest commit:
+
+`git reset --hard; git clean {{[-f|--force]}}`
+```
+
+## Linting
+
+Validate your page locally with `tldr-lint` before submitting a pull request:
+
+```bash
+# Install (requires Node.js)
+npm install --global tldr-lint
+
+# Lint a single page
+tldr-lint path/to/page.md
+
+# Lint an entire directory
+tldr-lint pages/common/
+```
+
+Depending on your tldr client, you can also preview how the rendered page will look:
+
+```bash
+tldr --render path/to/page.md
+```
+
+The linter runs automatically on every pull request, so fixing issues locally saves review round-trips.

@@ -1,0 +1,116 @@
+---
+title: "tldr Client CLI Interface Requirements"
+sidebarTitle: "CLI Interface"
+description: "Required and optional command-line arguments for compliant tldr clients: --version, --platform, --update, --list, --language, and option-format flags."
+---
+
+Clients that provide a command-line interface must implement a specific set of arguments to be considered compliant with the tldr-pages specification. When a client adds support for any option in the table below, it MUST implement **all variants** of that option — for example, both `-v` and `--version` must be supported together.
+
+## Required arguments
+
+These arguments MUST be implemented by every client that exposes a CLI:
+
+<ParamField path="-v, --version" type="flag" required>
+  Prints the current version of the client **and** the version of the tldr-pages
+  specification that it implements.
+</ParamField>
+
+<ParamField path="-p, --platform <platform>" type="string" required>
+  Specifies the platform (including `common`) to use when listing or searching
+  for pages. When this option is set, the selected platform MUST be checked
+  first instead of the host platform detected automatically. See [Page
+  Resolution](/spec/page-resolution) for details on platform fallback order.
+</ParamField>
+
+## Conditional arguments
+
+This argument is conditional on whether the client implements offline caching:
+
+<ParamField path="-u, --update" type="flag">
+  Updates the offline cache of pages. This argument **MUST** be implemented if
+  the client supports caching. See [Caching](/spec/caching) for download URLs
+  and cache requirements.
+</ParamField>
+
+## Optional arguments
+
+These arguments are not required but are strongly recommended for a complete client experience:
+
+<ParamField path="-l, --list" type="flag">
+  Lists all pages available for the current platform to standard output. When
+  stdout is not a TTY (e.g. piped to another command), output MUST be formatted
+  with one page name per line.
+</ParamField>
+
+<ParamField path="-L, --language <locale>" type="string">
+  Overrides all other language detection mechanisms and forces the client to
+  display pages in the specified locale. When this option is set, the client
+  MUST strictly adhere to its value and MUST NOT show pages in a different
+  language — it should fail with an appropriate error message if no page is
+  available in that language. See [Language Handling](/spec/language) for more
+  information.
+</ParamField>
+
+<ParamField path="--short-options" type="flag">
+  Filters page examples to show the **shortform** option variant when available
+  (e.g. `-A` instead of `--all`). Option placeholders MUST NOT be highlighted
+  when only one form is shown, since there is no longer user choice involved.
+  The surrounding square brackets MUST also be removed from option placeholders.
+</ParamField>
+
+<ParamField path="--long-options" type="flag">
+  Filters page examples to show the **longform** option variant when available
+  (e.g. `--all` instead of `-A`). The same placeholder rendering rules as
+  `--short-options` apply.
+</ParamField>
+
+## Default option format
+
+When neither `--short-options` nor `--long-options` is set by the user, clients SHOULD display only the **longform** option by default.
+
+If **both** `--short-options` and `--long-options` are provided at the same time, both forms MUST be displayed together (e.g. `[-A|--all]`).
+
+## Page name handling
+
+Before performing any page lookup, clients MUST apply two transformations to the page name provided by the user:
+
+1. **Space-to-dash concatenation** — Page names may contain spaces (e.g. `git checkout`). These spaces MUST be transparently replaced with dashes (`-`).
+
+   ```text
+   git checkout  →  git-checkout
+   ```
+
+2. **Lowercasing** — Page names may contain mixed capitalization (e.g. `eyeD3`). These names MUST be transparently lowercased.
+
+   ```text
+   eyeD3  →  eyed3
+   ```
+
+The first argument that does not begin with a dash (`-`) is MUST be treated as the page name.
+
+## TTY behavior
+
+- When standard output **is** a TTY, clients MAY add decorative formatting (colors, borders, etc.) to the output.
+- When standard output **is not** a TTY (e.g. output is piped to `grep` or another tool), the output MUST NOT contain any additional decorations.
+- In particular, `--list` output MUST always be formatted as **one page name per line** when stdout is not a TTY, to enable easy manipulation with standard CLI tools.
+
+## Example invocations
+
+The following examples illustrate correct usage of the flags and name transformations described above:
+
+```bash
+tldr --update
+tldr --version
+tldr -l
+tldr 7za
+tldr eyeD3          # equivalent to: tldr eyed3
+tldr git checkout   # equivalent to: tldr git-checkout
+tldr --platform osx bash
+tldr -L fr tar
+```
+
+<Note>
+  Clients MAY support additional custom arguments and syntax beyond what is
+  defined in this specification, as long as the required and conditional
+  arguments above are fully implemented.
+</Note>

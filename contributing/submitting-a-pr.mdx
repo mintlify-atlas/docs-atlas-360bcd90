@@ -1,0 +1,131 @@
+---
+title: "Submitting a Pull Request to tldr-pages"
+sidebarTitle: "Submitting a PR"
+description: "Step-by-step guide to testing, committing, and submitting a pull request to the tldr-pages GitHub repository for review and merge."
+---
+
+Once you've written or edited a tldr page, this guide walks you through validating your work locally and opening a clean pull request that is easy for maintainers to review and merge.
+
+## Testing locally
+
+<Steps>
+  <Step title="Install tldr-lint">
+    `tldr-lint` is the official linter for tldr pages. Install it globally using npm (requires the latest version of [Node.js](https://nodejs.org)):
+
+    ```bash
+    npm install --global tldr-lint
+    ```
+
+    You can also use its shorter alias `tldrl` once installed.
+  </Step>
+  <Step title="Run the linter against your page">
+    Point `tldr-lint` at the page file you created or modified:
+
+    ```bash
+    tldr-lint path/to/page.md
+    ```
+
+    The linter will report any formatting issues — fix them before submitting. You can also lint an entire directory at once:
+
+    ```bash
+    tldr-lint pages/common/
+    ```
+  </Step>
+  <Step title="Preview the rendered page (optional)">
+    Depending on your tldr client, you may be able to preview how the page will look when rendered:
+
+    ```bash
+    tldr --render path/to/page.md
+    ```
+
+    This is a quick sanity check to make sure placeholders, descriptions, and commands display as expected.
+  </Step>
+  <Step title="Run the full test suite (optional)">
+    From the repository root, you can run the full automated test suite to catch any broader issues:
+
+    ```bash
+    npm test
+    ```
+
+    This is the same suite that runs in CI on every pull request.
+  </Step>
+</Steps>
+
+## Pre-commit hook
+
+After cloning the repository, install the npm dependencies from inside the `tldr` directory:
+
+```bash
+npm install
+```
+
+This sets up [Husky](https://typicode.github.io/husky/) pre-commit hooks that run the linter automatically every time you commit. This means formatting issues are caught immediately, before they ever reach a pull request.
+
+If you need to bypass the hook for a specific commit (for example, a work-in-progress commit), use:
+
+```bash
+git commit --no-verify
+```
+
+Use this sparingly — the pre-commit hook is there to catch errors early.
+
+## Submitting via GitHub
+
+### The easy way: edit directly on GitHub
+
+The easiest way to submit a change is to edit the Markdown file directly in the GitHub web interface by clicking the **pencil icon** on any file. GitHub will automatically fork the repository, apply your change, and guide you through opening a pull request. Full step-by-step instructions with screenshots are available in the [GitHub Help docs](https://help.github.com/articles/editing-files-in-another-user-s-repository/).
+
+### Via Git on the command line
+
+If you prefer working locally, follow the standard Git workflow:
+
+```bash
+# 1. Fork the repo on GitHub, then clone your fork
+git clone https://github.com/<your-username>/tldr.git
+cd tldr
+
+# 2. Create a new branch for your change
+git checkout -b add-my-command
+
+# 3. Make your edits, then stage and commit
+git add pages/common/my-command.md
+git commit -m "my-command: add page"
+
+# 4. Push to your fork
+git push origin add-my-command
+```
+
+Then open a pull request on GitHub from your fork's branch to `tldr-pages/tldr:main`.
+
+A full walkthrough using the Git command line is also available in the [git-terminal guide](https://github.com/tldr-pages/tldr/blob/main/contributing-guides/git-terminal.md).
+
+## PR best practices
+
+- **Enable "Allow edits by maintainers"** on your pull request. This only needs to be done once (the first time you open a PR). It allows maintainers to push small fixes directly to your branch to help get it merged, and ensures the contribution can proceed even if you become unavailable.
+- **Base against the `main` branch.** All page additions and edits should target `main`, not any other branch.
+- **Do not force-push unless strictly necessary.** The project prefers to preserve the commit history within a PR so the chronological order of review comments and their addressing commits stays clear. PRs are typically squashed on merge, so a messy commit history in the PR branch is not a problem.
+- **Use the correct commit message format:** `command: type of change` (e.g. `tar: add --strip-components example`, `cp: add Tamil translation`).
+
+## Handling review suggestions
+
+Maintainers may leave inline suggestions on your pull request. The easiest way to apply them is to click the **Commit suggestion** button directly in the GitHub review UI — no need to edit files locally.
+
+To apply multiple suggestions in a single commit:
+
+1. Go to the **Files changed** tab of your pull request.
+2. Add all the suggestions you want to include using **Add suggestion to batch**.
+3. Click **Commit suggestions** and enter a descriptive commit message.
+
+Refer to the [GitHub documentation](https://docs.github.com/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/incorporating-feedback-in-your-pull-request) for more details on incorporating feedback.
+
+## After your PR merges
+
+Once your pull request is merged into `main`, it becomes part of the official tldr-pages repository. Pages are available in official clients as soon as a new release is published — typically shortly after the merge.
+
+Your contribution will also appear on the [contributors graph](https://github.com/tldr-pages/tldr/graphs/contributors). Thank you for helping make command-line tools more approachable for everyone!
+
+---
+
+<Note>
+  You must sign the **Contributor License Agreement (CLA)** before your pull request can be merged. Sign it at [https://cla-assistant.io/tldr-pages/tldr](https://cla-assistant.io/tldr-pages/tldr). The CLA assistant bot will leave a comment on your PR if you haven't signed yet.
+</Note>

@@ -1,0 +1,104 @@
+---
+title: "How to Contribute to tldr-pages"
+sidebarTitle: "Overview"
+description: "Learn how to add new pages, improve existing ones, translate pages, and submit pull requests to the tldr-pages community repository."
+---
+
+All contributions to the tldr-pages project are most welcome. Whether you want to add a brand-new command page, improve an existing one, fix a typo, translate pages into your language, or tackle a page requested by the community — every contribution helps make the project better for everyone.
+
+<Warning>
+  **Do not use generative AI tools (LLMs) to create or edit tldr pages.** The project strongly discourages this practice, as AI-generated output is often inaccurate and frequently fails to follow the style guidelines. For translations, machine translation tools may be used as a reference only — their output must be thoroughly proofread before submission. Pull requests suspected of being made in whole or in part through generative AI or machine translation software without human review will be closed.
+</Warning>
+
+## Ways to contribute
+
+<CardGroup cols={2}>
+  <Card title="Add a new page" icon="file-plus">
+    Write a tldr page for a command that doesn't have one yet. Place it in the
+    appropriate `pages/<platform>/` directory and follow the page format guide.
+  </Card>
+  <Card title="Improve an existing page" icon="pencil">
+    Fix typos, improve descriptions, add missing examples, or update outdated
+    information on any existing page.
+  </Card>
+  <Card title="Translate a page" icon="language">
+    Translate English pages into one of the 40+ supported languages. Pages live
+    in `pages.<locale>/` directories alongside the English source.
+  </Card>
+  <Card title="Fix a requested page" icon="github" href="https://github.com/tldr-pages/tldr/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22">
+    Browse open issues labelled **help wanted** on GitHub to find commands the
+    community has specifically requested.
+  </Card>
+</CardGroup>
+
+## Before you start
+
+- **Sign the Contributor License Agreement (CLA)** at [https://cla-assistant.io/tldr-pages/tldr](https://cla-assistant.io/tldr-pages/tldr). Your PR cannot be merged without it.
+- **Check for existing PRs.** Search the open pull requests to make sure nobody else is already working on the same command.
+- **Base your PR against the `main` branch.** All new page and improvement pull requests should target `main`.
+
+## Contribution workflow
+
+<Steps>
+  <Step title="Fork and clone the repository">
+    Fork the [tldr-pages/tldr](https://github.com/tldr-pages/tldr) repository on GitHub, then clone your fork locally:
+
+    ```bash
+    git clone https://github.com/<your-username>/tldr.git
+    cd tldr
+    ```
+  </Step>
+  <Step title="Create or edit the relevant Markdown file">
+    tldr pages are plain Markdown files stored under `pages/<platform>/`. For example, a command available on all platforms belongs in `pages/common/`, while a Linux-only command belongs in `pages/linux/`:
+
+    ```bash
+    # Create a new page
+    touch pages/common/my-command.md
+
+    # Or edit an existing page
+    nano pages/common/tar.md
+    ```
+
+    Refer to the [page format guide](/contributing/page-format) for the exact Markdown structure required.
+  </Step>
+  <Step title="Lint your page with tldr-lint">
+    Install `tldr-lint` (requires Node.js) and run it against your page to catch formatting issues before submitting:
+
+    ```bash
+    npm install --global tldr-lint
+    tldr-lint pages/common/my-command.md
+    ```
+  </Step>
+  <Step title="Submit a pull request">
+    Commit your changes using the correct commit message format (see below), push to your fork, and open a pull request against the `main` branch of `tldr-pages/tldr`. See the full [submitting a PR guide](/contributing/submitting-a-pr) for details.
+  </Step>
+</Steps>
+
+## Commit message format
+
+Every commit (and the PR title) for page changes must follow this format:
+
+```
+{{command}}: type of change
+```
+
+Where `{{command}}` is the name of the command being modified. Here are real examples drawn from the project:
+
+| Scenario | Example commit message |
+|---|---|
+| New page addition | `ls: add page` |
+| Alias page addition | `docker-container-rm: add alias page` |
+| Fix a typo | `cat: fix typo` |
+| Add an example | `git-push: add --force example` |
+| New translation | `cp: add Tamil translation` |
+| Fix a translation | `cp: fix typo in Tamil translation` |
+| Multiple related pages | `grep, find, locate: synchronize format of wildcards` |
+| Multiple pages (glob) | `pages*: fix Linux casing` |
+| Multiple subcommand pages | `git-{add, push, ...}: add page` |
+| All pages in a language | `pages.<locale>/*: update pages` |
+
+For changes to scripts rather than pages, use `scripts/{{script_name}}: description`. For everything else, follow the [Conventional Commits](https://www.conventionalcommits.org/) specification where possible.
+
+---
+
+Ready to dive deeper? Read the [Style Guide](/contributing/style-guide) to understand the writing rules for descriptions and examples, or the [Page Format reference](/contributing/page-format) for the exact Markdown structure every tldr page must follow.

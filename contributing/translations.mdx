@@ -1,0 +1,158 @@
+---
+title: "Translating tldr-pages into Other Languages"
+sidebarTitle: "Translations"
+description: "Contribute translated tldr pages in 40+ supported languages. Learn the directory structure, locale naming conventions, and translation guidelines."
+---
+
+tldr-pages supports 40+ languages. Translating pages makes the project accessible to command-line users around the world who are more comfortable reading instructions in their native language. Every translation contribution is welcome, from a single page to an entire platform directory.
+
+## Translation directory structure
+
+The English pages are the source of truth and live in the `pages/` directory. Each language has its own directory alongside it, named with a POSIX locale code:
+
+```
+tldr/
+├── pages/          ← English (source of truth)
+├── pages.fr/       ← French
+├── pages.zh/       ← Chinese (Simplified)
+├── pages.pt_BR/    ← Portuguese (Brazil)
+├── pages.zh_TW/    ← Chinese (Taiwan)
+├── pages.de/       ← German
+└── ...
+```
+
+### Locale naming convention
+
+Language directories follow the **POSIX Locale Name** pattern:
+
+```
+pages.<language>[_<country>]
+```
+
+- `<language>` — the shortest [ISO 639](https://en.wikipedia.org/wiki/ISO_639) language code for the chosen language.
+- `<country>` — an optional two-letter [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) country code, added only when there is a substantial difference between the base language and a regional dialect.
+
+Some examples of valid locale tags:
+
+| Locale | Directory |
+|---|---|
+| French | `pages.fr` |
+| Chinese (Simplified) | `pages.zh` |
+| Chinese (Singapore) | `pages.zh_SG` |
+| Chinese (Taiwan) | `pages.zh_TW` |
+| Portuguese (Brazil) | `pages.pt_BR` |
+| German | `pages.de` |
+
+For example, `fr_FR` and `fr_BE` both fall under `pages.fr` since there is virtually no difference in writing between standard French and Belgian French.
+
+### Platform directories
+
+Inside each language directory, the same platform subdirectories (`common/`, `linux/`, `osx/`, etc.) are used. A translated page mirrors the path of its English counterpart:
+
+```
+pages/common/tar.md         ← English original
+pages.fr/common/tar.md      ← French translation
+pages.zh/common/tar.md      ← Chinese translation
+```
+
+## Translation workflow
+
+<Steps>
+  <Step title="Check the translation progress dashboard">
+    Visit [https://lukwebsforge.github.io/tldri18n/](https://lukwebsforge.github.io/tldri18n/) to see a dynamically updated table of all pages and their translation status. This helps you identify which pages are missing translations or are outdated in your target language.
+  </Step>
+  <Step title="Create the language directory if it does not yet exist">
+    If no directory exists for your language yet, create it along with the appropriate platform subdirectory:
+
+    ```bash
+    mkdir -p pages.de/common
+    ```
+
+    When adding a new language, also add it to the [translation templates](https://github.com/tldr-pages/tldr/tree/main/contributing-guides/translation-templates) along with any page additions.
+  </Step>
+  <Step title="Create the translated page, mirroring the English path">
+    Create the translated Markdown file at the same relative path as the English original:
+
+    ```bash
+    # English original: pages/common/tar.md
+    touch pages.de/common/tar.md
+    ```
+
+    Translate the description text and example descriptions. Keep the Markdown structure, command lines, and placeholder syntax identical to the English page.
+  </Step>
+  <Step title="Submit a pull request">
+    Commit your translated file(s) using the standard commit message format and open a PR against the `main` branch. Multiple page translations may be grouped in a single pull request. Use the commit message format:
+
+    ```
+    cp: add Tamil translation
+    pages.fr/common/*: update pages
+    ```
+  </Step>
+</Steps>
+
+## Translation rules
+
+These rules apply to all language translations:
+
+- **Always base translations on the English page** in `pages/`. If the English page does not yet exist for a command, add it first in a separate PR before creating the translation.
+- **Only translate languages you can confidently read and proofread.** Avoid machine-generated or bulk edits across languages you do not know.
+- **Machine translation may be used as a reference only.** The output must be thoroughly proofread before submission. PRs suspected of being submitted without human review will be closed.
+- **Do not translate `example.com`.** The domain is reserved by IANA for documentation purposes. Replacing it with a translated equivalent could put users at risk.
+- **When fixing an existing translation, update the page to match the latest English version** at the same time where possible.
+- **When you change an English page, it is fine to leave other languages untouched.** Native speakers and maintainers will sync them later by referring to the translation dashboards.
+
+## Language-specific rules
+
+<Accordion title="French">
+  Command and example descriptions on pages in French must use the **third person singular present indicative** tense (*présent de l'indicatif à la troisième personne du singulier*).
+
+  - ✅ `Extrait une archive`
+  - ❌ `Extraire une archive`
+  - ❌ `Extrais une archive`
+
+  There must also be a single blank space before special characters (`:`) in descriptions:
+
+  - ✅ `Crée une archive à partir de fichiers :`
+  - ❌ `Crée une archive à partir de fichiers:`
+  - ✅ `Plus d'informations : https://example.com.`
+  - ❌ `Plus d'informations: https://example.com.`
+</Accordion>
+
+<Accordion title="Portuguese">
+  Example descriptions on pages in Portuguese (both European and Brazilian) must start with verbs in the **third person singular present indicative** tense. Descriptions should explain what the command does.
+
+  - ✅ `Lista os arquivos`
+  - ❌ `Listar os arquivos`
+  - ❌ `Listando os arquivos`
+</Accordion>
+
+<Accordion title="Spanish">
+  Descriptions of commands and examples must be conjugated in the **third person singular indicative** tense:
+
+  ```markdown
+  > Crea archivos.
+  ```
+
+  ```markdown
+  - Crea un archivo en un directorio:
+  ```
+
+  Preferably use `identificador` instead of `id` in placeholders (e.g. `{{identificador_de_usuario}}`). Writing prepositions is optional, but if a line exceeds the maximum length, choose one form (`identificador` or `id`) and use it consistently across all placeholders in that page.
+</Accordion>
+
+<Accordion title="Chinese (zh and zh_TW)">
+  When Chinese words, Latin words, and Arabic numerals appear in the same sentence, follow these rules:
+
+  1. Place one space before/after English words and numbers: `列出所有 docker 容器` not `列出所有docker容器`.
+  2. Place one space between numbers and units, **except** degrees and percentages: `容量 50 MB` but `50°C` and `50%`.
+  3. No additional spaces before/after full-width punctuations.
+  4. Use full-width punctuations except for long Latin clauses.
+  5. Use half-width punctuation to end a sentence when the last character is half-width: `将代码转化为 Python 3.` not `将代码转化为 Python 3。`.
+  6. Use precise form for technical terms; do not use unofficial Chinese abbreviations: use `Facebook` not `fb` or `脸书`.
+</Accordion>
+
+---
+
+<Tip>
+  Track translation progress at the **translation dashboard**: [https://lukwebsforge.github.io/tldri18n/](https://lukwebsforge.github.io/tldri18n/). You can also find the community in the **Matrix chatroom** at [#tldr-pages:matrix.org](https://matrix.to/#/#tldr-pages:matrix.org) for questions, discussion, and coordination with other translators.
+</Tip>

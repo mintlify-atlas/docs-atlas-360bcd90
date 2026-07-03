@@ -1,0 +1,239 @@
+---
+title: "tldr-pages Style Guide for Writing Commands"
+sidebarTitle: "Style Guide"
+description: "Follow these formatting and writing rules when creating or editing tldr pages. Covers page layout, descriptions, code examples, and language-specific rules."
+---
+
+The style guide ensures that every tldr page has consistent, high-quality, and easy-to-understand content. All contributors — whether writing new pages, editing existing ones, or translating — should follow these rules so that pages feel familiar regardless of which command or language they cover.
+
+## Page layout
+
+Every tldr page must follow this template exactly. The file has at most **8 command examples** and preferably around **5**:
+
+```markdown
+# command name
+
+> Short, snappy command description.
+> Preferably one line; two are acceptable if necessary.
+> More information: <https://example.com/command_name/help/page>.
+
+- Code description:
+
+`command_name options`
+
+- Code description:
+
+`command_name options`
+```
+
+A complete, real-world example:
+
+```markdown
+# krita
+
+> A sketching and painting program designed for digital artists.
+> See also: `gimp`.
+> More information: <https://docs.krita.org/en/reference_manual/linux_command_line.html>.
+
+- Start Krita:
+
+`krita`
+
+- Open specific files:
+
+`krita {{path/to/image1 path/to/image2 ...}}`
+
+- Start without a splash screen:
+
+`krita --nosplash`
+
+- Start with a specific workspace:
+
+`krita --workspace {{Animation}}`
+
+- Start in fullscreen mode:
+
+`krita --fullscreen`
+```
+
+<Note>
+  The page's filename and title must match the command name exactly. The Markdown filename must be **lowercase** (e.g. `my-command.md`), while the page title (`# heading`) may use any casing the command itself uses.
+</Note>
+
+## Writing guidelines
+
+### Imperative mood
+
+All descriptions — both the page heading description and individual example descriptions — must use the **imperative mood**. Write as if giving an instruction.
+
+| ✅ Correct | ❌ Incorrect |
+|---|---|
+| `List all files:` | `Lists all files:` |
+| `Go to the specified directory:` | `Going to the specified directory:` |
+| `Extract an archive file:` | `This command will extract an archive file:` |
+
+This rule applies to all translations by default, unless the language-specific section below states otherwise.
+
+### Number of examples
+
+- **Preferred:** ~5 examples per page.
+- **Maximum:** 8 examples. Never exceed this limit.
+- It is perfectly fine if a page doesn't cover every possible flag — that's what `man` pages are for.
+
+### Long vs. short options
+
+- Prefer **GNU-style long options** (e.g. `--all` rather than `-a`) so readers understand the meaning without memorizing abbreviations.
+- If a program only supports short options, document what the letter stands for using [short option mnemonics](#short-option-mnemonics) in the description (e.g. `[c]reate an archive`).
+- For pages in the `common` directory, ensure options are cross-platform compatible.
+- Use an **option placeholder** (e.g. `{{[-o|--output]}}`) to let the client choose whether to display the long or short form.
+
+### Complexity progression
+
+Start with the simplest invocation of a command and build toward more complex examples progressively. Users scanning the page should be able to find a useful example quickly without having to read through advanced flags first.
+
+### Do not explain general UNIX concepts
+
+Focus on details specific to the command being documented. Avoid explaining concepts that apply to every command, such as relative vs. absolute paths, glob patterns, or special character escaping.
+
+### Inclusive language
+
+Where possible, use inclusive language in page content:
+
+- Use **denylist** / **allowlist** instead of blacklist / whitelist.
+- Use **primary** / **secondary** instead of master / slave.
+- Use **they** instead of him / her.
+
+This should not be applied when the tool being documented uses specific technical terminology where these exact terms have a central meaning.
+
+## Short option mnemonics
+
+Short option mnemonics are optional hints enclosed in square brackets within the example description that help users understand what a short flag stands for. The mnemonic characters must match those used in the command's official documentation:
+
+```markdown
+- [c]reate an archive and write it to a [f]ile:
+
+`tar cf {{path/to/target.tar}} {{path/to/file1 path/to/file2 ...}}`
+
+- E[x]tract a (compressed) archive [f]ile into the current directory [v]erbosely:
+
+`tar xvf {{path/to/source.tar[.gz|.bz2|.xz]}}`
+```
+
+Group consecutive mnemonic characters within the same square brackets (e.g. `e[xp]i[r]ation` rather than `e[x][p]i[r]ation`). Mnemonic characters are **case-sensitive** — write `[d]isplay`, not `[D]isplay`.
+
+## Aliases
+
+If a command can be called by an alternative name (e.g. `vim` can be called as `vi`), create an alias page pointing to the original:
+
+```markdown
+# command_name
+
+> This command is an alias of `original-command-name`.
+
+- View documentation for the original command:
+
+`tldr original_command_name`
+```
+
+For example:
+
+```markdown
+# vi
+
+> This command is an alias of `vim`.
+
+- View documentation for the original command:
+
+`tldr vim`
+```
+
+Pre-translated alias page templates for all supported languages are available in the [translation templates directory](https://github.com/tldr-pages/tldr/blob/main/contributing-guides/translation-templates/alias-pages.md).
+
+## Disambiguations
+
+When multiple commands share the same name on the same platform, create a disambiguation page and rename the colliding pages with an appropriate suffix (a number starting from `1`, or a suffix like `.js` if a language name is relevant):
+
+```markdown
+# just
+
+> `just` can refer to multiple commands with the same name.
+
+- View documentation for the command runner:
+
+`tldr just.1`
+
+- View documentation for the V8 JavaScript runtime:
+
+`tldr just.js`
+```
+
+In this example, `just.md` is the disambiguation page, while `just.1.md` and `just.js.md` hold the actual pages.
+
+## Inclusive language
+
+Where possible, use inclusive language in page content. For example, prefer:
+
+- **denylist** / **allowlist** over blacklist / whitelist
+- **primary** / **secondary** over master / slave
+- **they** over him / her
+
+Of course, this should not sacrifice content clarity when the excluded terminology has a specific technical meaning central to explaining the tool.
+
+## Language-specific rules
+
+<Accordion title="French">
+  Command and example descriptions on pages in French must use the **third person singular present indicative** tense (*présent de l'indicatif à la troisième personne du singulier*).
+
+  For example, use `Extrait une archive` rather than `Extraire une archive` or `Extrais une archive`.
+
+  There must also be a single blank space before special characters (such as `:`) in descriptions.
+
+  - ✅ `Crée une archive à partir de fichiers :`
+  - ❌ `Crée une archive à partir de fichiers:`
+  - ✅ `Plus d'informations : https://example.com.`
+  - ❌ `Plus d'informations: https://example.com.`
+</Accordion>
+
+<Accordion title="Portuguese">
+  Example descriptions on pages in Portuguese (both European and Brazilian) must start with verbs in the **third person singular present indicative** tense. This is because descriptions explain what the command does.
+
+  For example, use `Lista os arquivos` instead of `Listar os arquivos`, `Listando os arquivos`, or any other verb form.
+</Accordion>
+
+<Accordion title="Spanish">
+  Descriptions of commands and examples must be conjugated in the **third person singular indicative** tense.
+
+  ```markdown
+  > Crea archivos.
+  ```
+
+  ```markdown
+  - Crea un archivo en un directorio:
+  ```
+
+  Preferably use `identificador` instead of `id` in placeholders of command examples, for example `{{identificador_de_usuario}}`. Writing prepositions is optional.
+</Accordion>
+
+<Accordion title="Chinese (zh and zh_TW)">
+  When Chinese words, Latin words, and Arabic numerals appear in the same sentence:
+
+  1. Place one space before/after English words and numbers (e.g. `列出所有 docker 容器`).
+  2. Place one space between numbers and units, **except** degrees and percentages (e.g. `容量 50 MB` but `50°C` and `50%`).
+  3. No additional spaces before/after full-width punctuations.
+  4. Use full-width punctuations except for long Latin clauses.
+  5. Use half-width punctuation to end a sentence when the last character is half-width (e.g. `将代码转化为 Python 3.`).
+  6. Use precise form for technical terms; do not use unofficial Chinese abbreviations (e.g. use `Facebook` not `fb` or `脸书`).
+</Accordion>
+
+---
+
+<Note>
+  A linter called **`tldr-lint`** automatically enforces most of these rules. It runs on every pull request, but you can install it locally to check your pages before submitting:
+
+  ```bash
+  npm install --global tldr-lint
+  tldr-lint path/to/tldr_page.md
+  ```
+
+  You can also use its alias `tldrl`. For all available options, see the [tldr page on tldr-lint](https://github.com/tldr-pages/tldr/blob/main/pages/common/tldr-lint.md).
+</Note>

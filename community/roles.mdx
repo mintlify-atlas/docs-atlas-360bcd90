@@ -1,0 +1,132 @@
+---
+title: "Community Roles in the tldr-pages Project"
+sidebarTitle: "Roles"
+description: "Understand the contributor, maintainer, and organization member roles in tldr-pages, how they are earned, and what responsibilities each entails."
+---
+
+tldr-pages has a flat, activity-based role system — roles reflect what you actually do, not a title you're handed. Rather than assigning roles and tasks to people, the community recognizes the work people already do, and strives to remove barriers that get in the way of contribution.
+
+Role transitions are designed to be **straightforward, transparent, predictable, and impartial**. The metrics used are objective, easy to check, and explicitly described below. That said, they are not hard-set rules — exceptions can always be considered through open community discussion.
+
+<Note>
+  It is required to have a secure [two-factor authentication (2FA)](https://github.com/settings/security) method (Authenticator app, Security Keys, or GitHub Mobile) enabled on your GitHub account to be added as an outside collaborator or a member of the tldr-pages organization.
+
+  SMS-based 2FA methods pose a higher risk of being compromised, so **all maintainers are required to disable SMS-based 2FA** and use more secure methods.
+</Note>
+
+## Roles
+
+<Accordion title="Contributor">
+  **What it is:** Anyone who submits issues, pull requests, bug reports, feature requests, or any other form of contribution. This is the starting point for everyone in the community.
+
+  **How to become one:** Just [open a pull request or issue](https://github.com/tldr-pages/tldr) on the tldr-pages repository. There are no prerequisites.
+
+  **What you can do:** Submit PRs, comment on issues and PRs, participate in community discussions.
+
+  **Next step:** After 5 non-trivial merged pull requests, you become eligible to be invited as a repository collaborator.
+</Accordion>
+
+<Accordion title="Repository Collaborator">
+  **What it is:** A contributor who has demonstrated consistent, quality contributions and is invited to help maintain the repository directly.
+
+  **How to earn it:** Once a contributor has had at least **5 non-trivial pull requests merged** on a repository under the tldr-pages organization, they should be invited to become a collaborator in that repository.
+
+  You can verify merged contributions at:
+  ```
+  https://github.com/tldr-pages/tldr/commits?author=<username>
+  ```
+
+  **What you can do:**
+  - Push commits to the repository
+  - Merge pull requests
+  - Label and close issues
+  - Add yourself to the [CODEOWNERS](https://github.com/tldr-pages/tldr/blob/main/.github/CODEOWNERS) file to receive automatic review request notifications for specific languages, platforms, or directories
+
+  **How the invitation works:** An owner opens a GitHub issue proposing the role change, the contributor accepts, and is added with write permissions at `https://github.com/tldr-pages/tldr/settings/collaboration`. The new collaborator is then encouraged to open a PR adding their name to the [MAINTAINERS.md](https://github.com/tldr-pages/tldr/blob/main/MAINTAINERS.md) file.
+
+  **Stepping down:** If a collaborator becomes inactive for an extended period, they will remain as a collaborator (retaining their commit, merge, label, and close abilities) but may be removed from the organization member role if they hold one. This is not a demotion — it simply reflects a change in activity.
+</Accordion>
+
+<Accordion title="Organization Member">
+  **What it is:** A collaborator who actively performs maintenance tasks (reviewing and/or merging PRs) and is recognized as part of the broader tldr-pages maintenance team.
+
+  **How to earn it:** Once a repository collaborator has:
+  - **Merged at least 10 PRs**, and
+  - **Submitted at least 5 non-trivial reviews** to PRs (these can overlap with the 10 they merged)
+
+  they should be invited to become a [member](https://github.com/orgs/tldr-pages/people) of the tldr-pages organization.
+
+  You can verify reviews at:
+  ```
+  https://github.com/tldr-pages/tldr/pulls?q=reviewed-by:<username>
+  ```
+
+  **What you can do:**
+  - Push commits to **all** repositories in the tldr-pages organization
+  - Merge PRs across all organization repositories
+  - Label and close issues across all repositories
+  - Access [a few extra maintenance capabilities](https://docs.github.com/en/organizations/managing-peoples-access-to-your-organization-with-roles/permission-levels-for-an-organization)
+
+  **Important:** All members of the tldr-pages organization **must make their membership public**.
+
+  **How the invitation works:** An owner opens a GitHub issue proposing the role change. Upon acceptance, the contributor is added to the organization. They are then encouraged to open a PR moving their entry to the "Organization members" section of [MAINTAINERS.md](https://github.com/tldr-pages/tldr/blob/main/MAINTAINERS.md).
+
+  **Stepping down:** If an organization member becomes **inactive for over 6 months**, their organization membership is deactivated. They remain a collaborator in repositories where they were previously active, and retain full ability to commit, merge PRs, label and close issues. If they return to active participation, they are re-added to the organization.
+</Accordion>
+
+<Accordion title="Organization Owner">
+  **What it is:** The most senior role in the tldr-pages community. Owners are responsible for performing role changes and managing the organization's settings.
+
+  **How to earn it:** Organization members who remain **active for at least 6 months** (see [MAINTAINERS.md](https://github.com/tldr-pages/tldr/blob/main/MAINTAINERS.md)) should be invited to become an [owner](https://help.github.com/articles/permission-levels-for-an-organization/) of the tldr-pages organization.
+
+  **What you can do:**
+  - Add people to the organization
+  - Manage all organization repositories
+  - Configure integrations
+  - Perform role changes (promoting collaborators, members, and owners)
+
+  **How the invitation works:** An owner opens a GitHub issue proposing the role change. Upon acceptance, the member's role is changed from "member" to "owner" at `https://github.com/orgs/tldr-pages/people`. The new owner then opens a PR moving their entry to the "Organization owners" section of [MAINTAINERS.md](https://github.com/tldr-pages/tldr/blob/main/MAINTAINERS.md).
+</Accordion>
+
+## Role transitions
+
+The role-transition process is designed so that community members' contributions are naturally recognized over time:
+
+<Steps>
+  <Step title="Start contributing">
+    Open pull requests, fix issues, help with translations, or review others' work. All contributions are welcome, no matter how small.
+  </Step>
+  <Step title="Reach 5 merged non-trivial PRs → Collaborator invitation">
+    Any community member (or owner) who notices your contributions can propose you as a repository collaborator by opening an issue. Owners carry out the actual invitation.
+  </Step>
+  <Step title="Merge 10 PRs and submit 5 non-trivial reviews → Organization member invitation">
+    As a collaborator performing regular maintenance, you become eligible for organization membership, giving you access to all tldr-pages repositories.
+  </Step>
+  <Step title="Stay active for 6 months as a member → Owner invitation">
+    Long-term active members are invited to become owners, taking on responsibility for community role transitions and organization-wide settings.
+  </Step>
+  <Step title="Roles adapt as activity changes">
+    If your availability or interest shifts, your role will naturally adjust. Inactive organization members are converted to outside collaborators after 6 months of inactivity — this is simply an accurate reflection of current involvement, not a demotion. Returning to active participation means being re-added to the organization.
+  </Step>
+</Steps>
+
+## Who can propose and perform role changes
+
+Any member of the community can — and is encouraged to — **propose role changes** by opening a GitHub issue following the process in [COMMUNITY-ROLES.md](https://github.com/tldr-pages/tldr/blob/main/COMMUNITY-ROLES.md). [Owners of the tldr-pages organization](https://github.com/tldr-pages/tldr/blob/main/MAINTAINERS.md) can then perform the actual role changes.
+
+## CODEOWNERS
+
+The [`.github/CODEOWNERS`](https://github.com/tldr-pages/tldr/blob/main/.github/CODEOWNERS) file allows contributors with write access to receive automatic review request notifications for specific files and directories. Contributors can open a pull request to add themselves to this file.
+
+Common uses include:
+- Reviewing translations for specific languages you speak
+- Reviewing PRs for specific platforms you have expertise in
+- Reviewing [client specification](https://github.com/tldr-pages/tldr/blob/main/CLIENT-SPECIFICATION.md) updates
+
+<Note>
+  The CODEOWNERS mechanism is purely for automatic review request routing and does not grant collaborators additional copyright over the files listed. See the [LICENSE](https://github.com/tldr-pages/tldr/blob/main/LICENSE.md) for more information.
+</Note>
+
+<Tip>
+  Ready to get started? Open your first pull request on the [tldr-pages repository](https://github.com/tldr-pages/tldr) — every merged contribution moves you closer to collaborator status, and the community is glad to help you along the way. See the [governance page](/community/governance) to understand the values that guide this community.
+</Tip>

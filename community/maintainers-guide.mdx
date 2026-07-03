@@ -1,0 +1,239 @@
+---
+title: "Maintainer Guide for tldr-pages Reviewers"
+sidebarTitle: "Maintainers Guide"
+description: "A practical guide for tldr-pages maintainers covering PR review workflows, merging conventions, label usage, and how to handle community contributions."
+---
+
+This guide describes the workflow and conventions for tldr-pages maintainers when reviewing and merging pull requests. It is a living standard — meant to *describe* the project's maintenance practices, not prescribe them rigidly. As a maintainer, refer to it for clarification on collaborative workflows, and propose changes to it when you feel updates would make it more useful.
+
+## I. Responding to contributions
+
+<Steps>
+  <Step title="Be welcoming and friendly">
+    When responding to issues or pull requests, remember that you're temporarily the face of the tldr-pages project. If you don't know how to answer, ping other maintainers who you think might have relevant input.
+  </Step>
+  <Step title="Keep the project responsive">
+    New discussion threads (issues or pull requests) should receive a response **within 3 days**, ideally. You can respond yourself or ask other members to provide their thoughts. Try to hang around in the [Matrix chat room](https://matrix.to/#/#tldr-pages:matrix.org) regularly as well.
+  </Step>
+  <Step title="Know when and how to say no">
+    Sometimes requests or contributions need to be declined, at least in their current form. The project has developed multiple guidelines over time to handle edge cases — get acquainted with them and point them out when necessary. Be polite but firm: it saves everyone's time and patience to make expectations clear early.
+  </Step>
+  <Step title="Always thank contributors">
+    Thank every contribution, even when it can't be accepted — especially then. Every pull request, feature request, and bug report is a voluntary gift of time from someone who cares about the project. Make it clear that we don't take it for granted.
+  </Step>
+  <Step title="Keep the process web-based when possible">
+    Try to keep the entire contribution process web-based to ensure it is accessible and straightforward. If you're comfortable with Git, consider offering to perform interactive rebases or other command-line operations on behalf of contributors, or assisting them if they want to do it themselves.
+  </Step>
+</Steps>
+
+## II. Handling PRs
+
+### Merge requirements
+
+A PR should be merged once it meets **all three** of the following conditions:
+
+1. **Passes the automated tests** (GitHub Actions, CLA signing, etc.)
+2. **Has all review comments addressed**
+3. **Has approved reviews from two maintainers** (the second maintainer can merge immediately after approving)
+
+<Note>
+  It is suggested to wait a few hours before merging a PR with new additions to English pages. This allows other maintainers time to review and provide feedback.
+</Note>
+
+### Non-English PRs and CODEOWNERS
+
+If a PR is non-English and there are automatic reviewers added via [CODEOWNERS](https://github.com/tldr-pages/tldr/blob/main/.github/CODEOWNERS), the PR needs **at least one approval from one of the CODEOWNERS**.
+
+- If the PR fails to get a CODEOWNERS review after a few days, the first maintainer should ping the CODEOWNERS for review.
+- If the PR lingers for **over 10 days without a CODEOWNERS approval**, it can be merged with two approvals from any maintainers.
+- If it still only has one approval after that, follow the next guideline about stalled PRs.
+
+### Stalled PRs (no second maintainer approval)
+
+If a PR fails to get a second maintainer's review after a few days, the first maintainer should ping others for review.
+
+- If the PR lingers for **over a week without a second approval**, a maintainer with Owner status can go ahead and merge it. Otherwise, send a message in the chatroom asking other maintainers to review.
+
+### Trivial fixes
+
+If the only issues holding up a merge are **trivial fixes** (typos, syntax errors, etc.) and the author doesn't respond within a day or two, maintainers can make the necessary changes themselves and proceed with the merge process.
+
+### Abandoned PRs
+
+If a PR **stops getting feedback from the submitter for more than a month**, any maintainer can choose to take over the PR and make the necessary changes to get the content ready for merging.
+
+### Avoiding reviewer fatigue
+
+During the review process, make sure contributors — especially new ones — are not overwhelmed with too many change requests. Be mindful of signs of fatigue (less enthusiastic responses, slower reactions), and relax review standards if necessary. Minor issues can always be fixed later.
+
+### Large or architectural changes
+
+<Note>
+  For pull requests with major, breaking, or architectural changes that are **not ready to be merged**, label them with the `decision` label and discuss the changes with other maintainers in the chatroom.
+</Note>
+
+### Hacktoberfest
+
+At the last week of October, all applicable PRs that wouldn't be merged in time can be labelled as `hacktoberfest-accepted`.
+
+## III. Merge strategies and commit messages
+
+### Choosing a merge strategy
+
+When merging PRs, use the strategy that produces the **cleanest Git history**:
+
+| Scenario | Strategy |
+|---|---|
+| PR has a single commit | `Squash and merge` |
+| Multiple commits that are not semantically independent | `Squash and merge` |
+| PR author crafted individual, informative commit messages for each commit | `Rebase and merge` |
+| Mixed "dirty" and "clean" commits — more dirty than clean | `Squash and merge` |
+| Mixed "dirty" and "clean" commits — more clean than dirty | `Rebase and merge` |
+
+<Note>
+  When using `Squash and merge`, don't forget to clean up the body of the squashed commit message.
+</Note>
+
+### Commit message format
+
+For small, focused changes, use:
+
+```txt
+page-name: a short description of the change
+
+Co-authored-by: ...
+```
+
+If a more descriptive message is needed, use asterisks for additional detail:
+
+```txt
+page-name: a short description of the change
+
+* some more information
+* ...
+
+---------
+
+Co-authored-by: ...
+```
+
+<Note>
+  Preserve the `Co-authored-by` line when cleaning up a squashed commit message, unless the change was trivial.
+</Note>
+
+### Avoid merging your own PRs
+
+Although having push access allows committing directly to all branches (except `main`), **create pull requests for all of your changes**. This ensures the full contribution process — which regular contributors go through — is also experienced by maintainers, helping identify and address any bottlenecks. Similarly, **avoid merging your own PRs** unless they have been approved by other maintainers.
+
+## IV. Transparency
+
+- All non-confidential requests or mail made on behalf of the project should be documented as a GitHub issue with the [`archive`](https://github.com/tldr-pages/tldr/issues?q=label%3Aarchive) label and communicated with other maintainers.
+- All repository or organization settings changes must be documented as an issue with the [`archive`](https://github.com/tldr-pages/tldr/issues?q=label%3Aarchive) label.
+
+## V. Handling failing actions and CLA checks
+
+<Warning>
+  While merging multiple pull requests at the same time, there is a chance the deploy step in the GitHub Actions workflow may fail. In such cases, **only re-run the workflow of the last-merged commit** to prevent assets from previous commits overwriting newer ones.
+</Warning>
+
+- If the CLA check is frozen at "Status waiting to be reported," close and reopen the pull request to retrigger the check, and notify the contributor.
+- To verify whether a contributor has signed the CLA, visit the dashboard at [https://cla-assistant.io/](https://cla-assistant.io/).
+
+## VI. Creating a client specification release
+
+### Pre-requisites
+
+- Ensure client specification changes have been discussed with other maintainers and the community on GitHub and in the chatroom, and that enough time has been provided for review.
+- Tag all client spec PRs under a [milestone](https://github.com/tldr-pages/tldr/milestones) for ease of release.
+- Ensure [GPG signing](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key) is set up for your account.
+- Prepare release notes in advance. Release notes should:
+  - Mention any pending breaking architectural changes from previous client specifications.
+  - Explain the client specification changes in detail, with examples where applicable.
+
+### Release steps
+
+<Steps>
+  <Step title="Merge all applicable PRs">
+    Merge all PRs that modify the client specification and ensure they are documented in the [CHANGELOG section of the client specification](https://github.com/tldr-pages/tldr/blob/main/CLIENT-SPECIFICATION.md#changelog).
+  </Step>
+  <Step title="Bump the version and notify maintainers">
+    Bump the version to the upcoming release in the client specification file and inform other maintainers in the chatroom about the release.
+  </Step>
+  <Step title="Clone the repository locally">
+    ```sh
+    git clone https://github.com/tldr-pages/tldr
+    ```
+  </Step>
+  <Step title="Cross-check the client specification file">
+    Verify the additions, version, and changelog details in the client specification file.
+  </Step>
+  <Step title="Create a signed tag">
+    ```sh
+    git tag -s vX.Y.Z
+    ```
+
+    Replace `X.Y.Z` with the client specification version.
+
+    If commits were merged after the version bump commit and before tagging, you can tag an older commit directly:
+    ```sh
+    git tag -s vX.Y.Z <commit hash>
+    ```
+  </Step>
+  <Step title="Verify the signed tag">
+    ```sh
+    git tag -v vX.Y.Z
+    ```
+  </Step>
+  <Step title="Push the tag to the repository">
+    ```sh
+    git push origin vX.Y.Z
+    ```
+  </Step>
+  <Step title="Draft a new release on GitHub">
+    Verify the tag's creation on the [tags page](https://github.com/tldr-pages/tldr/tags), then navigate to the [releases tab](https://github.com/tldr-pages/tldr/releases) and draft a new release. Choose the tag you just pushed, add the prepared release notes, give it an appropriate title, and enable the **"Create a discussion for this release"** option.
+  </Step>
+  <Step title="Publish the release and complete post-release steps">
+    After publishing:
+    - [View the `copy-release-assets.yml` workflow run](https://github.com/tldr-pages/tldr/actions/workflows/copy-release-assets.yml) and after its successful completion ensure assets are copied from the previous release.
+    - Notify the [social media managers](https://github.com/tldr-pages/access#social-media-accounts) to post about the release on Mastodon and other platforms.
+  </Step>
+</Steps>
+
+## VII. Periodic maintenance tasks
+
+To maintain the quality and relevance of the tldr-pages project, maintainers are encouraged to regularly perform the following tasks:
+
+<AccordionGroup>
+  <Accordion title="Monitor software updates">
+    Regularly check if the tools documented in tldr-pages have been updated — especially those introducing breaking changes. Update relevant pages accordingly and, where appropriate, encourage contributors to do the same.
+  </Accordion>
+  <Accordion title="Validate external links">
+    Periodically check that all links across the documentation and pages are functional. Use [automated link-checking tools](https://github.com/tldr-pages/tldr-maintenance/issues/129) to detect broken URLs, then replace or remove any broken links.
+  </Accordion>
+  <Accordion title="Update client status on the wiki">
+    Ensure the list of clients in the project's [Wiki](https://github.com/tldr-pages/tldr/wiki) reflects their current development status (active, inactive, deprecated). Reach out to client maintainers when needed for status updates.
+  </Accordion>
+  <Accordion title="Track and document new clients">
+    Look out for new tldr clients being developed. When appropriate, add them to the Wiki or relevant documentation, and encourage their maintainers to follow the project's conventions and style guidelines.
+  </Accordion>
+  <Accordion title="Revise CONTRIBUTING.md and the Style Guide">
+    Make sure that [CONTRIBUTING.md](https://github.com/tldr-pages/tldr/blob/main/CONTRIBUTING.md) and the [Style Guide](https://github.com/tldr-pages/tldr/blob/main/contributing-guides/style-guide.md) reflect current conventions. If community conventions shift, update these documents to guide future contributions.
+  </Accordion>
+  <Accordion title="Maintain collaborators and org members list">
+    Periodically review the list of collaborators and organization members. Remove inactive members and onboard new contributors who have demonstrated consistent involvement. Document any changes using an issue with the `community` label.
+  </Accordion>
+  <Accordion title="Manage 'Let's document' and translation requests">
+    Monitor and update issues labeled as `let's document` or language-specific translation requests. These are often maintained by issue authors, but there is room for improvement through automation — for example, updating issue status based on milestones or completed PRs.
+  </Accordion>
+  <Accordion title="Review translated pages">
+    Check the [tldr-maintenance repository](https://github.com/tldr-pages/tldr-maintenance/issues/127) for issues or inconsistencies with translated pages.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Related pages
+
+- [Governance](/community/governance) — the five principles that guide the tldr-pages community
+- [Community Roles](/community/roles) — how collaborator, organization member, and owner roles are earned and managed
+- [Submitting a PR](/contributing/submitting-a-pr) — a guide for contributors on how to open and manage pull requests

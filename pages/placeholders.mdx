@@ -1,0 +1,101 @@
+---
+title: "Placeholder Syntax in tldr Command Examples"
+sidebarTitle: "Placeholders"
+description: "Learn how tldr uses double-curly-brace placeholders for editable values and the option variant syntax for short and long flags in command examples."
+---
+
+Placeholders mark the parts of a command that the user should replace with their own values. They make it immediately obvious which tokens need to be customised before running the command, and they allow tldr clients to highlight those tokens visually. Understanding the placeholder conventions helps both readers and contributors write clear, consistent examples.
+
+## Basic placeholder syntax
+
+Any user-editable token is wrapped in double curly braces: `{{"{{"}}value{{"}}"}}`. Clients **must** display the content without the surrounding braces and **may** apply visual highlighting (e.g. colour or bold) to draw attention to it.
+
+```text
+`sleep {{5}}`                                            → sleep 5
+`cat {{path/to/file}}`                                   → cat path/to/file
+`tar czf {{path/to/target.tar.gz}} {{path/to/file1 path/to/file2 ...}}`
+```
+
+The inner text should be as descriptive as possible so a new user can understand what value is expected without needing to consult the man page. Use `snake_case` for multi-word placeholders.
+
+## Option variant placeholders
+
+When a flag has both a short form and a long form, use the `{{"{{"}}[-s|--long]{{"}}"}}` syntax to let clients choose which form to display:
+
+```text
+`git add {{[-A|--all]}}`
+```
+
+The short form goes on the left of `|` and the long form on the right. Depending on how the client was invoked:
+
+- `--short-options` flag → displays only the shortform: `git add -A`
+- `--long-options` flag → displays only the longform: `git add --all`
+- Neither flag (default) → clients **should** display the longform by default
+- Both flags → displays both: `git add [-A|--all]`
+
+When only one form is displayed, clients must remove the square brackets from the option placeholder so the result looks like a normal flag.
+
+You can group multiple flags that are always used together:
+
+```text
+`tar czf {{path/to/target.tar.gz}} {{[-C|--directory]}} {{path/to/directory}} .`
+```
+
+<Tip>
+Prefer GNU-style long options in pages under `common/` to help users understand what each flag does, not just memorise it. Use the option placeholder syntax to give clients the freedom to show the short form when requested.
+</Tip>
+
+## Path placeholders
+
+tldr-pages uses a consistent set of path placeholder conventions. Clients and contributors should follow these patterns:
+
+| Placeholder | Meaning |
+|-------------|---------|
+| `path/to/file` | A single file at any location |
+| `path/to/directory` | A directory at any location |
+| `path/to/file_or_directory` | Either a file or a directory |
+| `path/to/file1 path/to/file2 ...` | One or more files (ellipsis signals repetition) |
+| `path/to/target.tar.gz` | A file where the extension is part of the placeholder |
+
+The `path/to/` prefix makes it clear to users that a filesystem path is expected, even without reading the surrounding description. When a path must be absolute, place the leading `/` **outside** the placeholder.
+
+## Escaping braces
+
+Some commands use literal `{}` in their own syntax — for example, `git stash@{0}` or Docker format strings. In these cases, the **outer** braces still mark the placeholder boundary; the inner braces are displayed as-is:
+
+```text
+`git stash show --patch {{stash@{0}}}`
+```
+
+When a command's own syntax contains `{{` or `}}` that should **not** be treated as placeholder markers, escape each brace pair with a backslash:
+
+```text
+`docker inspect --format '\{\{range.NetworkSettings.Networks\}\}\{\{.IPAddress\}\}\{\{end\}\}' {{container}}`
+```
+
+A client encountering `\{\{` and `\}\}` must render literal `{{` and `}}` without backslashes, and must **not** treat them as placeholder syntax.
+
+## Rendering examples
+
+The examples below show how clients render various placeholder forms, drawn from the [Client Specification](https://github.com/tldr-pages/tldr/blob/main/CLIENT-SPECIFICATION.md):
+
+```text
+Input:    `ping {{example.com}}`
+Rendered: ping example.com
+
+Input:    `git add {{[-A|--all]}}` (short-options mode)
+Rendered: git add -A
+
+Input:    `git add {{[-A|--all]}}` (long-options mode)
+Rendered: git add --all
+
+Input:    `git add {{[-A|--all]}}` (both modes)
+Rendered: git add [-A|--all]
+
+Input:    `git stash show --patch {{stash@{0}}}`
+Rendered: git stash show --patch stash@{0}
+```
+
+<Tip>
+If the example description already specifies a concrete value, do **not** wrap it in a placeholder. For example, when the description says "Display records more recent than 3 days", write `lastlog --time 3` — not `lastlog --time {{"{{"}}3{{"}}"}}`. Placeholders are for values the user must choose, not values that are fixed by the example itself.
+</Tip>

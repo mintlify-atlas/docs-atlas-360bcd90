@@ -1,0 +1,87 @@
+---
+title: "How tldr Clients Resolve the Correct Page"
+sidebarTitle: "Page Resolution"
+description: "The algorithm tldr clients use to find the right page: platform priority, fallback to common, cross-platform search, and handling pages that aren't found."
+---
+
+When a user requests a page, the client must decide which file to serve based on the user's platform and language preferences. This document describes the full resolution algorithm that compliant tldr clients implement, from name normalization through platform lookup to error handling.
+
+## Name normalization
+
+Before any platform or language lookup begins, clients apply two transformations to the requested page name:
+
+1. **Replace spaces with dashes** — multi-word command names are joined with `-`.
+   `git checkout` → `git-checkout`
+2. **Lowercase the name** — all characters are converted to lowercase.
+   `eyeD3` → `eyed3`
+
+These transformations are applied transparently, so users can type commands naturally and the client will map them to the correct filename.
+
+| User input | Normalized name | Filename |
+|---|---|---|
+| `7za` | `7za` | `7za.md` |
+| `git checkout` | `git-checkout` | `git-checkout.md` |
+| `eyeD3` | `eyed3` | `eyed3.md` |
+
+## Platform resolution algorithm
+
+After normalizing the name, the client must determine which platform directory to look in. Clients MUST default to the platform on which the client is running.
+
+<Steps>
+  <Step title="Check the host platform">
+    Look for the page in the directory matching the user's current operating system (e.g., `windows`, `linux`, `osx`). If found, serve it immediately.
+  </Step>
+  <Step title="Fall back to common">
+    If the page is not found on the host platform, check the special `common` platform directory. Pages in `common` are commands that work identically across multiple platforms.
+  </Step>
+  <Step title="Search other platforms">
+    If the page is still not found in either the host platform or `common`, clients SHOULD search all remaining platforms (e.g., `linux`, `osx`, `windows`). If a page is found this way, clients **MUST display a warning message** to the user, since the command may not be available on their host platform. Steps 3 and 4 in the example below may be checked in either order.
+  </Step>
+</Steps>
+
+## Worked example
+
+Consider a user running Windows who requests the `apt` page. The client consults platforms in the following order:
+
+| Step | Platform checked | Result |
+|------|-----------------|--------|
+| 1 | `windows` | Not available |
+| 2 | `common` | Not available |
+| 3 | `osx` | Not available |
+| 4 | `linux` | Page found ✓ |
+
+<Note>
+  Finding a page in a non-host platform does **not** mean the command is available on the user's host platform. Clients must not assume that a given command is always executable on the host platform. When displaying a page sourced from a different platform, a warning message MUST be shown.
+</Note>
+
+## Page not found
+
+If a page cannot be found in any platform, it is RECOMMENDED that clients display an error message with a link inviting the user to request the page on GitHub:
+
+```text
+https://github.com/tldr-pages/tldr/issues/new?title=page%20request:%20{command_name}
+```
+
+Replace `{command_name}` with the normalized name of the command that was not found.
+
+CLI clients **MUST** exit with a non-zero exit code when a page is not found, in addition to showing the error message.
+
+## Multiple platform versions found
+
+If multiple versions of a page are found across different platforms (for example, one copy in `common` and another in `linux`), a client **MAY** choose to display a notice to the user informing them of this. The decision of whether to surface this information is left to the client implementation.
+
+## Platform flag
+
+Clients MUST support the `-p` / `--platform` flag to allow users to override automatic host-platform detection. When this flag is specified, the selected platform MUST be checked first instead of the current platform.
+
+```bash
+tldr --platform osx bash
+tldr -p linux apt
+tldr --platform common tar
+```
+
+`common` is a valid argument to the platform flag, allowing users to explicitly request a platform-agnostic page even when a platform-specific variant exists.
+
+<Note>
+  It is RECOMMENDED that clients detect new platforms added to the `pages/` directory automatically. However, clients MUST NOT break if new platforms appear — even if the client does not explicitly support them.
+</Note>
