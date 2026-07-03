@@ -1,5 +1,5 @@
 ---
-title: "Platform Directories and Page Organization"
+title: "Platform Directories and Page Organization in tldr-pages"
 sidebarTitle: "Platforms"
 description: "Learn how tldr-pages organizes command pages by platform: common, linux, osx, windows, android, and more. Understand when to use each directory."
 ---
@@ -14,7 +14,7 @@ The English pages live under the top-level `pages/` directory, which contains on
 pages/
 ├── common/      # Commands available on 2+ platforms
 ├── linux/
-├── osx/         # macOS (alias: macos)
+├── osx/         # macOS pages (to be renamed macos; alias: macos)
 ├── windows/
 ├── android/
 ├── freebsd/
@@ -51,7 +51,7 @@ Each sub-directory contains `.md` files named after the commands they document (
     Commands specific to any Linux distribution, including distro-specific package managers and utilities.
   </Card>
   <Card title="osx" icon="apple">
-    Commands specific to macOS (formerly OS X). The alias `macos` is also recognised by clients.
+    Commands specific to macOS (formerly OS X). The directory is currently named `osx/` and is planned to be renamed to `macos/`; clients should support `macos` as an alias.
   </Card>
   <Card title="windows" icon="windows">
     Commands for Windows, including PowerShell cmdlets and `cmd.exe` built-ins.

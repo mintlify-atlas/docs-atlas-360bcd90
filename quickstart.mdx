@@ -1,7 +1,7 @@
 ---
-title: "Get Started with tldr-pages in Minutes"
+title: "Install tldr-pages and Look Up Your First CLI Command"
 sidebarTitle: "Quickstart"
-description: "Install a tldr client on Linux, macOS, or Windows and look up your first command. Get working with tldr-pages in under 5 minutes."
+description: "Install a tldr client on Linux, macOS, or Windows and look up your first command. Get up and running with tldr-pages in under 5 minutes."
 ---
 
 tldr gives you instant, example-focused help for any CLI command — no scrolling through dense man pages, no searching Stack Overflow. Type `tldr <command>` and you get the most practical usage patterns right in your terminal, with clear placeholders showing exactly what to substitute.
@@ -74,6 +74,9 @@ tldr gives you instant, example-focused help for any CLI command — no scrollin
 
       - Extract a (compressed) archive file into the target directory:
         tar xf path/to/source.tar[.gz|.bz2|.xz] --directory path/to/directory
+
+      - Create a compressed archive and write it to a file, using the file extension to automatically determine the compression program:
+        tar caf path/to/target.tar.xz path/to/file1 path/to/file2 ...
 
       - List the contents of a tar file verbosely:
         tar tvf path/to/source.tar

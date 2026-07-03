@@ -1,5 +1,5 @@
 ---
-title: "Translating tldr-pages into Other Languages"
+title: "Translating tldr Pages into Other Languages: Full Guide"
 sidebarTitle: "Translations"
 description: "Contribute translated tldr pages in 40+ supported languages. Learn the directory structure, locale naming conventions, and translation guidelines."
 ---
@@ -10,7 +10,7 @@ tldr-pages supports 40+ languages. Translating pages makes the project accessibl
 
 The English pages are the source of truth and live in the `pages/` directory. Each language has its own directory alongside it, named with a POSIX locale code:
 
-```
+```text
 tldr/
 ├── pages/          ← English (source of truth)
 ├── pages.fr/       ← French
@@ -25,7 +25,7 @@ tldr/
 
 Language directories follow the **POSIX Locale Name** pattern:
 
-```
+```text
 pages.<language>[_<country>]
 ```
 
@@ -49,7 +49,7 @@ For example, `fr_FR` and `fr_BE` both fall under `pages.fr` since there is virtu
 
 Inside each language directory, the same platform subdirectories (`common/`, `linux/`, `osx/`, etc.) are used. A translated page mirrors the path of its English counterpart:
 
-```
+```text
 pages/common/tar.md         ← English original
 pages.fr/common/tar.md      ← French translation
 pages.zh/common/tar.md      ← Chinese translation
@@ -83,7 +83,7 @@ pages.zh/common/tar.md      ← Chinese translation
   <Step title="Submit a pull request">
     Commit your translated file(s) using the standard commit message format and open a PR against the `main` branch. Multiple page translations may be grouped in a single pull request. Use the commit message format:
 
-    ```
+    ```text
     cp: add Tamil translation
     pages.fr/common/*: update pages
     ```

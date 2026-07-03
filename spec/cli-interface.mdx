@@ -1,5 +1,5 @@
 ---
-title: "tldr Client CLI Interface Requirements"
+title: "tldr-pages Client Specification: CLI Interface"
 sidebarTitle: "CLI Interface"
 description: "Required and optional command-line arguments for compliant tldr clients: --version, --platform, --update, --list, --language, and option-format flags."
 ---
@@ -86,7 +86,7 @@ Before performing any page lookup, clients MUST apply two transformations to the
    eyeD3  →  eyed3
    ```
 
-The first argument that does not begin with a dash (`-`) is MUST be treated as the page name.
+The first argument that does not begin with a dash (`-`) MUST be treated as the page name.
 
 ## TTY behavior
 
@@ -106,7 +106,6 @@ tldr 7za
 tldr eyeD3          # equivalent to: tldr eyed3
 tldr git checkout   # equivalent to: tldr git-checkout
 tldr --platform osx bash
-tldr -L fr tar
 ```
 
 <Note>

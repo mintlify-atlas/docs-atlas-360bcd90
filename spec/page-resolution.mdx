@@ -70,6 +70,10 @@ CLI clients **MUST** exit with a non-zero exit code when a page is not found, in
 
 If multiple versions of a page are found across different platforms (for example, one copy in `common` and another in `linux`), a client **MAY** choose to display a notice to the user informing them of this. The decision of whether to surface this information is left to the client implementation.
 
+## Platform aliases
+
+It is RECOMMENDED that clients support `macos` as an alias for `osx`. When a user specifies `macos` as the platform (via the `-p` / `--platform` flag or in configuration), it MUST be treated as equivalent to `osx`.
+
 ## Platform flag
 
 Clients MUST support the `-p` / `--platform` flag to allow users to override automatic host-platform detection. When this flag is specified, the selected platform MUST be checked first instead of the current platform.
